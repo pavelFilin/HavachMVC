@@ -8,11 +8,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class MvcConfiguration implements WebMvcConfigurer {
-//    @Value("${upload.path}")
+    @Value("${upload.path}")
     private String uploadPath;
 
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/login").setViewName("login");
+        registry.addViewController("/login").setViewName("userPages/login");
     }
 
     @Override
@@ -20,8 +20,7 @@ public class MvcConfiguration implements WebMvcConfigurer {
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
         registry.addResourceHandler("/img/**")
-//                .addResourceLocations("file:///" + uploadPath + "/");
-                .addResourceLocations("file:///" + "uploadPath" + "/");
+                .addResourceLocations("file:///" + uploadPath + "/");
     }
 
 }
