@@ -1,0 +1,25 @@
+#login{
+        background-color: #525252;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+html, body, .common {
+    height: 100%;
+    margin: 0px;
+}
+
+.centered-form {
+    margin-top: 60px;;
+}
+
+.centered-form .panel{
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: rgba(0, 0, 0, 0.44) 20px 20px 20px;
+}
+
+.log-up-button {
+    border-radius: 50px;
+    width: 50%;
+}

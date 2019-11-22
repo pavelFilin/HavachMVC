@@ -13,7 +13,7 @@
     </head>
     <body>
     <#include "navbar.ftl">
-    <div class="all-content">
+    <div class="all-content common">
         <#nested >
     </div>
 
