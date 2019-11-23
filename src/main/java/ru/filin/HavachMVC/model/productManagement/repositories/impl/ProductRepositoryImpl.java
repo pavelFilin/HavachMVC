@@ -26,14 +26,14 @@ public class ProductRepositoryImpl implements ProductRepository {
 
         String query = "SELECT * FROM products";
 
-       return jdbcTemplate.query(query, new RowMapper<Product>() {
+        return jdbcTemplate.query(query, new RowMapper<Product>() {
             @Override
             public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Product product = new Product();
                 while (rs.next()) {
-                    product.id = rs.getLong("id");
-                    product.price = rs.getInt("price");
-                    product.description = rs.getString("description");
+                    product.setId(rs.getLong("id"));
+                    product.setPrice(rs.getInt("price"));
+                    product.setDescription(rs.getString("description"));
                 }
                 return product;
             }

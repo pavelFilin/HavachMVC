@@ -4,17 +4,17 @@ import lombok.Data;
 
 @Data
 public class Product {
-    public long id;
+    private long id;
 
-    public String name;
+    private String name;
 
-    public String description;
+    private String description;
 
-    public int price;
+    private int price;
 
-    public long details_id;
+    private long details_id;
 
-    public long warehouse_id;
+    private long warehouse_id;
 
-    public String photo;
+    private String photo;
 }
