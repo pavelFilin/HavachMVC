@@ -2,6 +2,9 @@ package ru.filin.HavachMVC.model.userManagement.entities;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 public class User {
     private long id;
@@ -13,4 +16,8 @@ public class User {
     private String secondName;
 
     private String password;
+
+    private boolean active;
+
+    List<Role> roles = new ArrayList<>();
 }

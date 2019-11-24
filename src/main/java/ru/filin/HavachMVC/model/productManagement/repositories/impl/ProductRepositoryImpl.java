@@ -3,12 +3,14 @@ package ru.filin.HavachMVC.model.productManagement.repositories.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.filin.HavachMVC.model.productManagement.entities.Product;
 import ru.filin.HavachMVC.model.productManagement.repositories.ProductRepository;
+import ru.filin.HavachMVC.model.userManagement.entities.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -74,4 +76,5 @@ public class ProductRepositoryImpl implements ProductRepository {
         return (Long) jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(
                 parameters));
     }
+
 }

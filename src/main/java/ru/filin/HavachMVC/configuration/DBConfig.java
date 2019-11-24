@@ -9,7 +9,6 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 
 @Configuration
-//@PropertySource(value = "classpath:db.properties", ignoreResourceNotFound = true)
 public class DBConfig {
     @Value("${jdbc.driversql}")
     private String driver;
@@ -20,7 +19,7 @@ public class DBConfig {
     @Value("${jdbc.username}")
     private String username;
 
-    @Value("${jdbc.username}")
+    @Value("${jdbc.password}")
     private String password;
 
     @Bean
