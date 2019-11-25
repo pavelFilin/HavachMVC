@@ -40,7 +40,7 @@
                                 </#if>
 
                                 <div class="form-group">
-                                    <input type="email" name="email" id="email" class="form-control input-sm"
+                                    <input type="email" name="username" id="email" class="form-control input-sm"
                                            placeholder="Email Address">
                                 </div>
 
@@ -71,7 +71,7 @@
                                     </div>
                                 </#if>
                                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                                <input type="submit" value="Sing up" class="btn btn-info btn-block log-up-button">
+                                <input type="submit" <#if isRegisterForm>value="Sing up"<#else>value="Sing in"</#if> class="btn btn-info btn-block log-up-button">
                             </form>
                         </div>
                     </div>

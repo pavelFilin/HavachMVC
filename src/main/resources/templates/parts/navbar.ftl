@@ -1,4 +1,4 @@
-<#include "security.ftl">
+<#include "security.ftlh">
 <#import "login.ftlh" as login>
     <div class="container-fluid sticky-top navbar-dark bg-dark" id="navigator">
         <nav class="navbar navbar-expand-md navbar ">

@@ -20,4 +20,8 @@ public class User {
     private boolean active;
 
     List<Role> roles = new ArrayList<>();
+
+    public boolean isAdmin() {
+        return roles.stream().filter(role -> "ADMIN".equals(role.getName())).count() > 0;
+    }
 }
