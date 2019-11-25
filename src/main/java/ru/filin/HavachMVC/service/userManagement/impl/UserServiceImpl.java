@@ -1,5 +1,7 @@
 package ru.filin.HavachMVC.service.userManagement.impl;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.filin.HavachMVC.model.userManagement.entities.User;
 import ru.filin.HavachMVC.model.userManagement.repositories.UserRepository;
@@ -44,5 +46,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getByEmail(String email) {
         return userRepository.getByEmail(email);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User byEmail = getByEmail(email);
+        return byEmail;
     }
 }

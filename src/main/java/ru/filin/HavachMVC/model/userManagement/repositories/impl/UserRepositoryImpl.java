@@ -2,6 +2,8 @@ package ru.filin.HavachMVC.model.userManagement.repositories.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.filin.HavachMVC.model.userManagement.RoleConstant;
@@ -47,6 +49,7 @@ public class UserRepositoryImpl implements UserRepository {
                     user.setEmail(rs.getString("email"));
                     user.setFirstName(rs.getString("first_name"));
                     user.setSecondName(rs.getString("second_name"));
+                    user.setActive(rs.getBoolean("active"));
                 }
             }
             return null;
@@ -73,6 +76,7 @@ public class UserRepositoryImpl implements UserRepository {
                     user.setEmail(rs.getString("email"));
                     user.setFirstName(rs.getString("first_name"));
                     user.setSecondName(rs.getString("second_name"));
+                    user.setActive(rs.getBoolean("active"));
                 }
             }
             return null;
@@ -102,8 +106,10 @@ public class UserRepositoryImpl implements UserRepository {
         });
 
         String saveUser = "INSERT INTO " +
-                "   usr (first_name, second_name, password, email) " +
-                "VALUES (?,?,?,?); ";
+                "   usr (first_name, second_name, password, email, active) " +
+                "VALUES (?,?,?,?,?); ";
+
+        //todo save_user
 
         String saveRoles = "INSERT INTO " +
                 "user_roles (user_id, role_id) " +
@@ -119,13 +125,13 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getByEmail(String email) {
-        String getUserById = "SELECT * " +
+        String getUserByEmail = "SELECT * " +
                 "FROM usr u \n" +
                 "INNER JOIN user_roles ur ON u.id=ur.user_id \n" +
-                "INNER JOIN roles r on ur.role_id = r.id where u.id = ?";
+                "INNER JOIN roles r on ur.role_id = r.id where u.email = ?";
 
         final User user = new User();
-        jdbcTemplate.queryForObject(getUserById, new Object[]{email}, (rs, rowNum) -> {
+        jdbcTemplate.queryForObject(getUserByEmail, new Object[]{email}, (rs, rowNum) -> {
             while (rs.next()) {
                 if (user.getId() != 0) {
                     user.getRoles().add(new Role(rs.getLong("role_id"), rs.getString("name")));
@@ -133,8 +139,10 @@ public class UserRepositoryImpl implements UserRepository {
                     user.getRoles().add(new Role(rs.getLong("role_id"), rs.getString("name")));
                     user.setId(rs.getLong("id"));
                     user.setEmail(rs.getString("email"));
+                    user.setPassword(rs.getString("password"));
                     user.setFirstName(rs.getString("first_name"));
                     user.setSecondName(rs.getString("second_name"));
+                    user.setActive(rs.getBoolean("active"));
                 }
             }
             return null;

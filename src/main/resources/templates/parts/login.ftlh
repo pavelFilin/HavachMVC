@@ -1,12 +1,12 @@
 <#macro logout>
     <form action="/logout" method="post">
         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-        <input class="btn badge-primary btn-sm ml-1" type="submit" value="Sign Out"/>
+        <input class="btn badge-primary btn-sm mt-1 ml-1" type="submit" value="Logout"/>
     </form>
 </#macro>
 
 <#macro login path isRegisterForm>
-    <div id="login">
+    <div id="login" class="mt-5">
         <form action="${path}"
               method="post">
             <div class="row centered-form">

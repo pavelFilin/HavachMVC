@@ -1,14 +1,16 @@
 package ru.filin.HavachMVC.configuration;
 
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configurers.provisioning.JdbcUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import ru.filin.HavachMVC.model.userManagement.repositories.impl.UserRepositoryImpl;
+import ru.filin.HavachMVC.service.userManagement.impl.UserServiceImpl;
 
 import javax.sql.DataSource;
 
@@ -18,17 +20,21 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private DataSource dataSource;
 
-    private HchJdbcUserDetailsManager jdbcUserDetailsManager;
+    private JdbcTemplate jdbcTemplate;
 
-    public WebSecurityConfiguration(DataSource dataSource) {
+    private UserDetailsService userService;
+
+    public WebSecurityConfiguration(DataSource dataSource, JdbcTemplate jdbcTemplate, @Qualifier("userServiceImpl") UserDetailsService userService) {
         this.dataSource = dataSource;
+        this.jdbcTemplate = jdbcTemplate;
+        this.userService = userService;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .mvcMatchers("/", "/registration**", "/error**").permitAll()
+                .mvcMatchers("/", "/registration**", "/error**", "/static**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -41,27 +47,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
 
-
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        JdbcUserDetailsManagerConfigurer<AuthenticationManagerBuilder> authenticationManagerBuilderJdbcUserDetailsManagerConfigurer = auth.jdbcAuthentication();
-        authenticationManagerBuilderJdbcUserDetailsManagerConfigurer
-                .dataSource(dataSource)
-                .passwordEncoder(NoOpPasswordEncoder.getInstance())
-                .usersByUsernameQuery("SELECT email, password, active from usr where email=?")
-                .authoritiesByUsernameQuery("SELECT email as username, name as authority FROM usr u\n" +
-                        "INNER JOIN user_roles ur ON u.id=ur.user_id\n" +
-                        "INNER JOIN roles r on ur.role_id = r.id WHERE email = ?;");
-//                .authoritiesByUsernameQuery("SELECT u.email, ur.roles from usr u INNER JOIN user_roles ur ON u.id=ur.userId where u.email=?");
+        auth
+                .userDetailsService(new UserServiceImpl(new UserRepositoryImpl(jdbcTemplate)))
+                .passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
-
-//    @Bean(name = "jdbcUserDetailsManager")
-//    public JdbcUserDetailsManager jdbcUserDetailsManager()
-//    {
-//        JdbcUserDetailsManager jdbcUserDetailsManager = new HchJdbcUserDetailsManager();
-//        jdbcUserDetailsManager.setDataSource(dataSource);
-//
-//        return jdbcUserDetailsManager;
-//    }
 }
