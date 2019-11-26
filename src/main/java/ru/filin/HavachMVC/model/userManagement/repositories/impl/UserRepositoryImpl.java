@@ -2,8 +2,6 @@ package ru.filin.HavachMVC.model.userManagement.repositories.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.filin.HavachMVC.model.userManagement.RoleConstant;
@@ -48,7 +46,7 @@ public class UserRepositoryImpl implements UserRepository {
                     user.setId(id);
                     user.setEmail(rs.getString("email"));
                     user.setFirstName(rs.getString("first_name"));
-                    user.setSecondName(rs.getString("second_name"));
+                    user.setLastName(rs.getString("last_name"));
                     user.setActive(rs.getBoolean("active"));
                 }
             }
@@ -75,7 +73,7 @@ public class UserRepositoryImpl implements UserRepository {
                     user.setId(rs.getLong("id"));
                     user.setEmail(rs.getString("email"));
                     user.setFirstName(rs.getString("first_name"));
-                    user.setSecondName(rs.getString("second_name"));
+                    user.setLastName(rs.getString("last_name"));
                     user.setActive(rs.getBoolean("active"));
                 }
             }
@@ -102,22 +100,25 @@ public class UserRepositoryImpl implements UserRepository {
         String getIdByUser = "SELECT nextval(pg_get_serial_sequence('usr', 'id'))";
 
         long userId = jdbcTemplate.query(getIdByUser, rs -> {
-            return rs.getLong(1);
+            rs.next();
+            return rs.getLong("nextval");
         });
 
         String saveUser = "INSERT INTO " +
-                "   usr (first_name, second_name, password, email, active) " +
-                "VALUES (?,?,?,?,?); ";
+                "   usr (id, first_name, last_name, password, email, active) " +
+                "VALUES (?,?,?,?,?,?); ";
 
         //todo save_user
+        jdbcTemplate.update(saveUser, userId, obj.getFirstName(), obj.getLastName(), obj.getPassword(), obj.getEmail(), obj.isActive());
 
         String saveRoles = "INSERT INTO " +
                 "user_roles (user_id, role_id) " +
-                "VALUES (" + userId + "?)";
+                "VALUES (" + userId + ", " + "?)";
 
         List<Role> roles = obj.getRoles();
         for (Role role : roles) {
-            jdbcTemplate.update(saveRoles, new Object[]{RoleConstant.valueOf(role.getName()).getCode()});
+            long code = role.getId();
+            jdbcTemplate.update(saveRoles, new Object[]{code});
         }
 
         return userId;
@@ -131,7 +132,7 @@ public class UserRepositoryImpl implements UserRepository {
                 "INNER JOIN roles r on ur.role_id = r.id where u.email = ?";
 
         final User user = new User();
-        jdbcTemplate.queryForObject(getUserByEmail, new Object[]{email}, (rs, rowNum) -> {
+        jdbcTemplate.query(getUserByEmail, new Object[]{email}, (rs, rowNum) -> {
             while (rs.next()) {
                 if (user.getId() != 0) {
                     user.getRoles().add(new Role(rs.getLong("role_id"), rs.getString("name")));
@@ -141,7 +142,7 @@ public class UserRepositoryImpl implements UserRepository {
                     user.setEmail(rs.getString("email"));
                     user.setPassword(rs.getString("password"));
                     user.setFirstName(rs.getString("first_name"));
-                    user.setSecondName(rs.getString("second_name"));
+                    user.setLastName(rs.getString("last_name"));
                     user.setActive(rs.getBoolean("active"));
                 }
             }

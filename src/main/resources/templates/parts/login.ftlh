@@ -26,13 +26,13 @@
                                     <div class="row">
                                         <div class="col-xs-6 col-sm-6 col-md-6">
                                             <div class="form-group">
-                                                <input type="text" name="first_name" id="first_name"
+                                                <input type="text" name="firstName" id="first_name"
                                                        class="form-control input-sm" placeholder="First Name">
                                             </div>
                                         </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6">
                                             <div class="form-group">
-                                                <input type="text" name="last_name" id="last_name"
+                                                <input type="text" name="lastName" id="last_name"
                                                        class="form-control input-sm" placeholder="Last Name">
                                             </div>
                                         </div>
@@ -40,7 +40,7 @@
                                 </#if>
 
                                 <div class="form-group">
-                                    <input type="email" name="username" id="email" class="form-control input-sm"
+                                    <input type="email" <#if isRegisterForm>name="email"<#else >name="username"</#if>  id="email" class="form-control input-sm"
                                            placeholder="Email Address">
                                 </div>
 
@@ -54,7 +54,7 @@
                                         </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6">
                                             <div class="form-group">
-                                                <input type="password" name="password_confirmation"
+                                                <input type="password" name="passwordConfirmation"
                                                        id="password_confirmation" class="form-control input-sm"
                                                        placeholder="Confirm Password">
                                             </div>

@@ -13,7 +13,7 @@ import ru.filin.HavachMVC.model.userManagement.entities.User;
 import ru.filin.HavachMVC.service.userManagement.UserService;
 
 @Controller
-@RequestMapping("registration")
+@RequestMapping("/registration")
 public class RegistrationControllerImpl implements RegistrationController {
 
     UserService userService;
@@ -29,7 +29,7 @@ public class RegistrationControllerImpl implements RegistrationController {
     }
 
     @PostMapping
-    public String addNewUser(@RequestParam User user, Model model) {
+    public String addNewUser(User user, @RequestParam String passwordConfirmation, Model model) {
         User userFromDB = userService.getByEmail(user.getEmail());
         if (userFromDB != null) {
             model.addAttribute("message", "User is exit");
