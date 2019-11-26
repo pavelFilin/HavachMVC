@@ -12,3 +12,7 @@
     border-radius: 50px;
     width: 50%;
 }
+
+#cart-button {
+    width: 100px;
+}

@@ -1,5 +1,6 @@
 package ru.filin.HavachMVC.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,16 +18,10 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    private DataSource dataSource;
-
-    private JdbcTemplate jdbcTemplate;
-
     private UserDetailsService userService;
 
-    public WebSecurityConfiguration(DataSource dataSource, JdbcTemplate jdbcTemplate, @Qualifier("userServiceImpl") UserDetailsService userService) {
-        this.dataSource = dataSource;
-        this.jdbcTemplate = jdbcTemplate;
+    @Autowired
+    public WebSecurityConfiguration(@Qualifier("userServiceImpl") UserDetailsService userService) {
         this.userService = userService;
     }
 
@@ -34,7 +29,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .mvcMatchers("/", "/registration**", "/error**", "/static**").permitAll()
+                .mvcMatchers("/", "/registration**", "/error**", "/stat ic**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -50,7 +45,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .userDetailsService(new UserServiceImpl(new UserRepositoryImpl(jdbcTemplate)))
+                .userDetailsService(userService)
                 .passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
 }
