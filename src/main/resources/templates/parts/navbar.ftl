@@ -2,7 +2,7 @@
 <#import "login.ftlh" as login>
 <div class="container-fluid sticky-top navbar-dark bg-dark" id="navigator">
     <nav class="navbar navbar-expand-md navbar ">
-        <a href="/" class="navbar-brand">Fish market</a>
+        <a href="/" class="navbar-brand">Havach</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" href="#collapseExample" role="button"
                 aria-expanded="false"
                 aria-controls="collapseExample">
@@ -29,13 +29,13 @@
                         <a class="nav-link" href="/registration"><span class="fas fa-user"></span> Sign Up</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/login"><span class="fas fa-sign-in-alt"></span> Login</a>
+                        <a class="nav-link" href="/user/profile"><span class="fas fa-sign-in-alt"></span> Login</a>
                     </li>
                 </ul>
             <#else>
                 <ul class="nav navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><span><i class="fas fa-user-circle"></i></span> ${email}</a>
+                        <a class="nav-link" href="/user/profile"><span><i class="fas fa-user-circle"></i></span> ${email}</a>
                     </li>
                     <li class="nav-item">
                         <a class="btn btn-danger btn-sm mt-1 mr-2" href="#" id="cart-button">Cart</a>
