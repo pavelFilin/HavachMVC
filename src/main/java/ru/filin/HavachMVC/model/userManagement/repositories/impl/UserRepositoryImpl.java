@@ -145,6 +145,6 @@ public class UserRepositoryImpl implements UserRepository {
             return user1;
         });
 
-        return user.get();
+        return user.orElse(null);
     }
 }

@@ -34,6 +34,14 @@ public class RegistrationControllerImpl implements RegistrationController {
 
         if (userFromDB != null) {
             model.addAttribute("message", "User is exit");
+            model.addAttribute("user", user);
+            return "userPages/registration";
+        }
+
+        if (!user.getPassword().equals(passwordConfirmation)) {
+            model.addAttribute("message", "password and confirm password not matched");
+            model.addAttribute("user", user);
+            return "userPages/registration";
         }
 
         user.getRoles().add(new Role(RoleConstant.USER.getCode(), RoleConstant.USER.name()));

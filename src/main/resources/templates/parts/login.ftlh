@@ -20,6 +20,11 @@
                             </#if>
 
                         </div>
+                        <#if message??>
+                            <div class="alert alert-danger" role="alert">
+                                ${message}
+                            </div>
+                        </#if>
                         <div class="panel-body">
                             <form role="form">
                                 <#if isRegisterForm>
@@ -27,20 +32,32 @@
                                         <div class="col-xs-6 col-sm-6 col-md-6">
                                             <div class="form-group">
                                                 <input type="text" name="firstName" id="first_name"
-                                                       class="form-control input-sm" placeholder="First Name">
+                                                       class="form-control input-sm"
+                                                       <#if user??>
+                                                           value="${user.firstName?if_exists}"
+                                                       </#if>
+                                                       placeholder="First Name">
                                             </div>
                                         </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6">
                                             <div class="form-group">
                                                 <input type="text" name="lastName" id="last_name"
-                                                       class="form-control input-sm" placeholder="Last Name">
+                                                       class="form-control input-sm"
+                                                        <#if user??>
+                                                            value="${user.lastName?if_exists}"
+                                                        </#if>
+                                                       placeholder="Last Name">
                                             </div>
                                         </div>
                                     </div>
                                 </#if>
 
                                 <div class="form-group">
-                                    <input type="email" <#if isRegisterForm>name="email"<#else >name="username"</#if>  id="email" class="form-control input-sm"
+                                    <input type="email" <#if isRegisterForm>name="email" <#else >name="username"</#if>
+                                           id="email" class="form-control input-sm"
+                                            <#if user??>
+                                                value="${user.email?if_exists}"
+                                            </#if>
                                            placeholder="Email Address">
                                 </div>
 
@@ -71,7 +88,8 @@
                                     </div>
                                 </#if>
                                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                                <input type="submit" <#if isRegisterForm>value="Sing up"<#else>value="Sing in"</#if> class="btn btn-info btn-block log-up-button">
+                                <input type="submit" <#if isRegisterForm>value="Sing up" <#else>value="Sing in"</#if>
+                                       class="btn btn-info btn-block log-up-button">
                             </form>
                         </div>
                     </div>
