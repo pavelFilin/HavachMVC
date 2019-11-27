@@ -1,7 +1,7 @@
 <#macro logout>
     <form action="/logout" method="post">
         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-        <input class="btn badge-primary btn-sm " type="submit" value="Logout"/>
+        <input class="btn badge-primary mt-1 btn-sm " type="submit" value="Logout"/>
     </form>
 </#macro>
 

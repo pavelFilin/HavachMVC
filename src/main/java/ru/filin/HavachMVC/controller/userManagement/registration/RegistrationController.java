@@ -1,4 +1,4 @@
-package ru.filin.HavachMVC.controller.userManagement.registation;
+package ru.filin.HavachMVC.controller.userManagement.registration;
 
 import org.springframework.ui.Model;
 

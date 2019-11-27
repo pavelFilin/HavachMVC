@@ -9,10 +9,7 @@ import ru.filin.HavachMVC.model.userManagement.entities.Role;
 import ru.filin.HavachMVC.model.userManagement.entities.User;
 import ru.filin.HavachMVC.model.userManagement.repositories.UserRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -131,23 +128,23 @@ public class UserRepositoryImpl implements UserRepository {
                 "INNER JOIN user_roles ur ON u.id=ur.user_id \n" +
                 "INNER JOIN roles r on ur.role_id = r.id where u.email = ?";
 
-        final User user = new User();
-        jdbcTemplate.query(getUserByEmail, new Object[]{email}, (rs, rowNum) -> {
-            while (rs.next()) {
-                if (user.getId() != 0) {
-                    user.getRoles().add(new Role(rs.getLong("role_id"), rs.getString("name")));
-                } else {
-                    user.getRoles().add(new Role(rs.getLong("role_id"), rs.getString("name")));
-                    user.setId(rs.getLong("id"));
-                    user.setEmail(rs.getString("email"));
-                    user.setPassword(rs.getString("password"));
-                    user.setFirstName(rs.getString("first_name"));
-                    user.setLastName(rs.getString("last_name"));
-                    user.setActive(rs.getBoolean("active"));
-                }
-            }
-            return null;
+        List<User> users = jdbcTemplate.query(getUserByEmail, new Object[]{email}, (rs, rowNum) -> {
+            User u = new User();
+            u.getRoles().add(new Role(rs.getLong("role_id"), rs.getString("name")));
+            u.setId(rs.getLong("id"));
+            u.setEmail(rs.getString("email"));
+            u.setPassword(rs.getString("password"));
+            u.setFirstName(rs.getString("first_name"));
+            u.setLastName(rs.getString("last_name"));
+            u.setActive(rs.getBoolean("active"));
+            return u;
         });
-        return user;
+
+        Optional<User> user = users.stream().reduce((user1, user2) -> {
+            user1.getRoles().add(user2.getRoles().get(0));
+            return user1;
+        });
+
+        return user.get();
     }
 }

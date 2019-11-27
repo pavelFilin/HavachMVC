@@ -5,7 +5,7 @@
         <a href="/" class="navbar-brand">Fish market</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" href="#collapseExample" role="button"
                 aria-expanded="false"
-                aria-controls="collapseExample"><#-- data-toggle="collapse" data-target="#navbarNav"> -->
+                aria-controls="collapseExample">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="collapseExample">
@@ -38,7 +38,7 @@
                         <a class="nav-link" href="#"><span><i class="fas fa-user-circle"></i></span> ${email}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-danger btn-sm mr-2" href="#" id="cart-button">Cart</a>
+                        <a class="btn btn-danger btn-sm mt-1 mr-2" href="#" id="cart-button">Cart</a>
                     </li>
                     <li class="nav-item">
                         <@login.logout/>
