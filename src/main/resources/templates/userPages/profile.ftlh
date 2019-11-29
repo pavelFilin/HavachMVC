@@ -4,10 +4,7 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-3 ">
-                <div class="list-group ">
-                    <a href="#" class="list-group-item list-group-item-action active">Dashboard</a>
-                    <a href="#" class="list-group-item list-group-item-action">User Management</a>
-                </div>
+                <#include "../parts/userprofilenav.ftlh"/>
             </div>
             <div class="col-md-9">
                 <div class="card">
@@ -18,9 +15,9 @@
                                 <hr>
                             </div>
                         </div>
-                        <div class="row">
+                        <d  iv class="row">
                             <div class="col-md-12">
-                                <form>
+                                <form action="/user/profile" method="POST">
                                     <div class="form-group row">
                                         <label for="username" class="col-4 col-form-label">First name</label>
                                         <div class="col-8">
@@ -37,6 +34,7 @@
                                         <div class="col-8">
                                             <input id="name" name="lastName" placeholder="First Name"
                                                    class="form-control here"
+                                                   required="required"
                                                     <#if user??>
                                                         value="${user.lastName?if_exists}"
                                                     </#if>
@@ -46,7 +44,7 @@
                                     <div class="form-group row">
                                         <label for="email" class="col-4 col-form-label">Email*</label>
                                         <div class="col-8">
-                                            <input id="email" disabled name="email" placeholder="Email" class="form-control here"
+                                            <input id="email" disabled name=""  placeholder="Email" class="form-control here"
                                                     <#if user??>
                                                         value="${user.email?if_exists}"
                                                     </#if>
@@ -57,12 +55,12 @@
                                         <label for="newpass" class="col-4 col-form-label">New Password</label>
                                         <div class="col-8">
                                             <input id="newpass" name="password" placeholder="New Password"
-
                                                    class="form-control here" type="text">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <div class="offset-4 col-8">
+                                            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                             <button name="submit" type="submit" class="btn btn-primary">Update My
                                                 Profile
                                             </button>

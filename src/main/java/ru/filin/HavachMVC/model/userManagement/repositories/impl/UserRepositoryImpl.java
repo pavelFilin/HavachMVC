@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.filin.HavachMVC.model.userManagement.RoleConstant;
 import ru.filin.HavachMVC.model.userManagement.entities.Role;
 import ru.filin.HavachMVC.model.userManagement.entities.User;
 import ru.filin.HavachMVC.model.userManagement.repositories.UserRepository;
@@ -31,8 +30,9 @@ public class UserRepositoryImpl implements UserRepository {
         Map<Long, User> users = new HashMap<>();
 
         jdbcTemplate.query(getAllUsers, (rs, rowNum) -> {
-            User user = new User();
-            while (rs.next()) {
+
+            do {
+                User user = new User();
                 long id = rs.getLong("id");
                 if (users.containsKey(id)) {
                     User userAlreadyExist = users.get(id);
@@ -45,8 +45,11 @@ public class UserRepositoryImpl implements UserRepository {
                     user.setFirstName(rs.getString("first_name"));
                     user.setLastName(rs.getString("last_name"));
                     user.setActive(rs.getBoolean("active"));
+                    users.put(user.getId(), user);
                 }
+
             }
+            while (rs.next());
             return null;
         });
 
@@ -62,7 +65,7 @@ public class UserRepositoryImpl implements UserRepository {
 
         final User user = new User();
         jdbcTemplate.queryForObject(getUserById, new Object[]{id}, (rs, rowNum) -> {
-            while (rs.next()) {
+            do {
                 if (user.getId() != 0) {
                     user.getRoles().add(new Role(rs.getLong("role_id"), rs.getString("name")));
                 } else {
@@ -74,6 +77,7 @@ public class UserRepositoryImpl implements UserRepository {
                     user.setActive(rs.getBoolean("active"));
                 }
             }
+            while (rs.next());
             return null;
         });
         return user;
@@ -86,9 +90,22 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void update(User obj) {
-        String updateUser;
-        return;
+    public void update(User user) {
+        String updateUser = "UPDATE usr SET " +
+                "first_name = ?, " +
+                "last_name = ?, " +
+                "password = ?, " +
+                "active = ?" +
+                "WHERE email = ?";
+
+        jdbcTemplate.update(
+                updateUser,
+                user.getFirstName(),
+                user.getLastName(),
+                user.getPassword(),
+                user.isActive(),
+                user.getEmail()
+        );
     }
 
     @Override
