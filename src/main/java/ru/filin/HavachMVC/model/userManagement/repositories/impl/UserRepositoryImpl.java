@@ -74,6 +74,7 @@ public class UserRepositoryImpl implements UserRepository {
                     user.setEmail(rs.getString("email"));
                     user.setFirstName(rs.getString("first_name"));
                     user.setLastName(rs.getString("last_name"));
+                    user.setPassword(rs.getString("password"));
                     user.setActive(rs.getBoolean("active"));
                 }
             }
@@ -90,6 +91,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    @Transactional
     public void update(User user) {
         String updateUser = "UPDATE usr SET " +
                 "first_name = ?, " +
@@ -106,6 +108,17 @@ public class UserRepositoryImpl implements UserRepository {
                 user.isActive(),
                 user.getEmail()
         );
+
+        String roleClear = "DELETE FROM user_roles WHERE user_id = ?";
+        jdbcTemplate.update(roleClear, user.getId());
+
+        String updateRole = "INSERT INTO user_roles " +
+                "(user_id, role_id) " +
+                "values (?, ?)";
+
+        for (Role role : user.getRoles()) {
+            jdbcTemplate.update(updateRole, user.getId(), role.getId());
+        }
     }
 
     @Override
