@@ -33,5 +33,12 @@ create table products
     name         varchar(255)  not null
 );
 
+create table category
+(
+  id bigserial not null  primary key,
+  title varchar(50) not null unique,
+  parent_id int8 null
+);
+
 ALTER TABLE user_roles ADD CONSTRAINT user_role_ROLES FOREIGN KEY (user_id) REFERENCES usr ON DELETE RESTRICT;
 ALTER TABLE user_roles ADD CONSTRAINT role_id_USER_ROLES FOREIGN KEY (user_id) REFERENCES usr ON DELETE RESTRICT;
