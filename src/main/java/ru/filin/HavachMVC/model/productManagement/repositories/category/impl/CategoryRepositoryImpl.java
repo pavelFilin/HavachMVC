@@ -7,6 +7,7 @@ import ru.filin.HavachMVC.model.productManagement.entities.Category;
 import ru.filin.HavachMVC.model.productManagement.repositories.category.CategoryRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class CategoryRepositoryImpl implements CategoryRepository {
@@ -34,6 +35,15 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     public Category getByTitle(String title) {
         String getCategoryById = "SELECT * FROM category WHERE title = ?";
         return jdbcTemplate.queryForObject(getCategoryById, new Object[]{title}, ROW_MAPPER);
+    }
+
+    @Override
+    public List<Long> findByParentId(long id) {
+        String findCategoryByParentId = "SELECT * FROM category WHERE parent_id = ?";
+        return jdbcTemplate.query(findCategoryByParentId, new Object[]{id}, ROW_MAPPER)
+                .stream()
+                .map(Category::getId)
+                .collect(Collectors.toList());
     }
 
     @Override

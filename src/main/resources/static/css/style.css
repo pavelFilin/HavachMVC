@@ -16,3 +16,8 @@
 #cart-button {
     width: 100px;
 }
+
+.category-display td {
+    text-align: center;
+    vertical-align: middle;
+}

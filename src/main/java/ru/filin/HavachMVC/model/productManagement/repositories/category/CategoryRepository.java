@@ -5,6 +5,7 @@ import ru.filin.HavachMVC.model.productManagement.entities.Category;
 import ru.filin.HavachMVC.service.BaseService;
 
 import java.sql.ResultSet;
+import java.util.List;
 
 public interface CategoryRepository extends BaseService<Category> {
     RowMapper<Category> ROW_MAPPER = (ResultSet resultSet, int rowNum) -> {
@@ -12,4 +13,6 @@ public interface CategoryRepository extends BaseService<Category> {
     };
 
     Category getByTitle(String title);
+
+    List<Long> findByParentId(long id);
 }

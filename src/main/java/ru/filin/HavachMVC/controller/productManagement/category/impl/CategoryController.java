@@ -3,14 +3,11 @@ package ru.filin.HavachMVC.controller.productManagement.category.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.filin.HavachMVC.model.productManagement.entities.Category;
 import ru.filin.HavachMVC.service.productManagement.category.CategoryService;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -35,6 +32,21 @@ public class CategoryController {
     @PostMapping
     public String addNewCategory(@RequestParam String title, @RequestParam(required = false) String parentId) {
         categoryService.addCategory(title, parentId);
+        return "redirect:/category";
+    }
+
+    @PostMapping("/{id}")
+    public String deleteCategory(@PathVariable long id, final RedirectAttributes redirectAttributes) {
+        Category category = categoryService.getById(id);
+        List<Long> childIds = categoryService.getChildIds(id);
+        if (childIds.size() > 0) {
+            redirectAttributes.addFlashAttribute(
+                    "message",
+                    "This category id[" + id + "] has children categories " + childIds.toString());
+        } else {
+            categoryService.delete(id);
+        }
+//        return getCategories(model);
         return "redirect:/category";
     }
 

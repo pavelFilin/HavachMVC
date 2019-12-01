@@ -51,11 +51,16 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void addCategory(String title, String parentIdStr) {
         long parentId = -1;
-        if (!StringUtils.isEmpty(parentId)) {
+        if (!StringUtils.isEmpty(parentIdStr)) {
             parentId = parseId(parentIdStr);
         }
         Category category = new Category(title, parentId);
         categoryRepository.save(category);
+    }
+
+    @Override
+    public List<Long> getChildIds(long id) {
+        return categoryRepository.findByParentId(id);
     }
 
     private long parseId(String id) {
