@@ -1,4 +1,4 @@
-package ru.filin.HavachMVC.controller.productManagement.impl.category;
+package ru.filin.HavachMVC.controller.productManagement.category.impl;
 
 import org.springframework.stereotype.Controller;
 

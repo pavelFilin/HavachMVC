@@ -1,8 +1,8 @@
-package ru.filin.HavachMVC.controller.productManagement.rest.impl;
+package ru.filin.HavachMVC.controller.productManagement.product.rest.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.filin.HavachMVC.controller.productManagement.rest.ProductRestController;
+import ru.filin.HavachMVC.controller.productManagement.product.rest.ProductRestController;
 import ru.filin.HavachMVC.model.productManagement.entities.Product;
 import ru.filin.HavachMVC.service.productManagement.product.ProductService;
 
