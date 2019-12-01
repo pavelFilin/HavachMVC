@@ -1,10 +1,10 @@
-package ru.filin.HavachMVC.service.productManagement.impl;
+package ru.filin.HavachMVC.service.productManagement.product.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.filin.HavachMVC.model.productManagement.entities.Product;
-import ru.filin.HavachMVC.model.productManagement.repositories.ProductRepository;
-import ru.filin.HavachMVC.service.productManagement.ProductService;
+import ru.filin.HavachMVC.model.productManagement.repositories.product.ProductRepository;
+import ru.filin.HavachMVC.service.productManagement.product.ProductService;
 
 import java.util.List;
 

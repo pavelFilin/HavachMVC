@@ -1,10 +1,10 @@
-package ru.filin.HavachMVC.service.orderManagement.impl;
+package ru.filin.HavachMVC.service.productManagement.category.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.filin.HavachMVC.model.orderManagement.entities.Category;
-import ru.filin.HavachMVC.model.orderManagement.repositories.CategoryRepository;
-import ru.filin.HavachMVC.service.orderManagement.CategoryService;
+import ru.filin.HavachMVC.model.productManagement.entities.Category;
+import ru.filin.HavachMVC.model.productManagement.repositories.category.CategoryRepository;
+import ru.filin.HavachMVC.service.productManagement.category.CategoryService;
 
 import java.util.List;
 

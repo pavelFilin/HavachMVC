@@ -1,4 +1,4 @@
-package ru.filin.HavachMVC.model.productManagement.repositories;
+package ru.filin.HavachMVC.model.productManagement.repositories.product;
 
 import ru.filin.HavachMVC.model.BaseRepository;
 import ru.filin.HavachMVC.model.productManagement.entities.Product;

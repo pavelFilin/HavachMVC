@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.filin.HavachMVC.controller.productManagement.rest.ProductRestController;
 import ru.filin.HavachMVC.model.productManagement.entities.Product;
-import ru.filin.HavachMVC.service.productManagement.ProductService;
+import ru.filin.HavachMVC.service.productManagement.product.ProductService;
 
 
 import java.util.List;
