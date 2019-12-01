@@ -23,27 +23,14 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public List<Product> getAll() {
-
         String query = "SELECT * FROM products";
-
-        return jdbcTemplate.query(query, new RowMapper<Product>() {
-            @Override
-            public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Product product = new Product();
-                while (rs.next()) {
-                    product.setId(rs.getLong("id"));
-                    product.setPrice(rs.getInt("price"));
-                    product.setDescription(rs.getString("description"));
-                }
-                return product;
-            }
-        });
+        return jdbcTemplate.query(query, ROW_MAPPER);
     }
 
     @Override
     public Product getById(long id) {
         String query = "SELECT * FROM products WHERE id = ?";
-        return jdbcTemplate.queryForObject(query, new Object[]{id}, BeanPropertyRowMapper.newInstance(Product.class));
+        return jdbcTemplate.queryForObject(query, new Object[]{id}, ROW_MAPPER);
     }
 
     @Override
@@ -55,8 +42,18 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public void update(Product obj) {
-        String query = "UPDATE products SET (name, price, description, details_id, warehouse_id, photo) VALUES (?, ?, ?, ?, ?, ?) WHERE id = ?";
-        jdbcTemplate.update(query, new Object[]{obj.getName(), obj.getPrice(), obj.getDescription(), obj.getDetails_id(), obj.getWarehouse_id(), obj.getPhoto(), obj.getId()});
+        String query = "UPDATE products SET (name, price, description, details_id, stock, active,  photo) VALUES (?, ?, ?, ?, ?, ?, ?) WHERE id = ?";
+        jdbcTemplate.update(
+                query,
+                obj.getName(),
+                obj.getPrice(),
+                obj.getDescription(),
+                obj.getDetails_id(),
+                obj.getStock(),
+                obj.isActive(),
+                obj.getPhoto(),
+                obj.getId()
+        );
     }
 
     @Override
@@ -69,7 +66,8 @@ public class ProductRepositoryImpl implements ProductRepository {
         parameters.put("price", obj.getPrice());
         parameters.put("description", obj.getDescription());
         parameters.put("details_id", obj.getDetails_id());
-        parameters.put("warehouse_id", obj.getWarehouse_id());
+        parameters.put("stock", obj.getStock());
+        parameters.put("active", obj.isActive());
         parameters.put("photo", obj.getPrice());
         return (Long) jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(
                 parameters));

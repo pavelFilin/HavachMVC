@@ -14,7 +14,7 @@
                 </#if>
                 <div class="row">
                     <div class="col-md-8">
-                            <table class="table table-bordered table-hover category-display">
+                        <table class="table table-bordered table-hover category-display">
                             <thead class="thead-dark">
                             <th>ID</th>
                             <th>Title</th>
@@ -26,11 +26,17 @@
                                 <tr>
                                     <td class="text">${category.id}</td>
                                     <td>${category.title}</td>
-                                    <td>${category.parentId}</td>
+                                    <#if category.parentId != 0>
+                                        <td>${category.parentId}</td>
+                                    <#else>
+                                        <td></td>
+                                    </#if>
+
                                     <td align="center">
                                         <form action="/category/${category.id}" method="POST">
                                             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                                            <button class="btn btn-outline-danger" type="submit"><i class="fas fa-trash-alt"></i></button>
+                                            <button class="btn btn-outline-danger" type="submit"><i
+                                                        class="fas fa-trash-alt"></i></button>
                                         </form>
                                     </td>
                                 </tr>
@@ -49,6 +55,7 @@
                             <div class="form-group">
                                 <label for="parentCategory">Parent ID</label>
                                 <select name="parentId" class="form-control" id="parentCategory">
+                                    <option></option>
                                     <#list categories as category>
                                         <option>${category.id} - ${category.title}</option>
                                     </#list>
@@ -63,6 +70,4 @@
 
         </div>
     </div>
-
-
 </@c.page>

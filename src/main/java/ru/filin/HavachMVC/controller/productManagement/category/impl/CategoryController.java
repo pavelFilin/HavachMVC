@@ -46,7 +46,7 @@ public class CategoryController {
         } else {
             categoryService.delete(id);
         }
-//        return getCategories(model);
+
         return "redirect:/category";
     }
 
