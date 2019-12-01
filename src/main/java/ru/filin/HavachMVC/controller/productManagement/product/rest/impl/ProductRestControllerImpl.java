@@ -6,14 +6,18 @@ import ru.filin.HavachMVC.controller.productManagement.product.rest.ProductRestC
 import ru.filin.HavachMVC.model.productManagement.entities.Product;
 import ru.filin.HavachMVC.service.productManagement.product.ProductService;
 
-
 import java.util.List;
 
 @RestController
 @RequestMapping("product")
 public class ProductRestControllerImpl implements ProductRestController {
-    @Autowired
+
     private ProductService productService;
+
+    @Autowired
+    public ProductRestControllerImpl(ProductService productService) {
+        this.productService = productService;
+    }
 
     @Override
     @GetMapping
