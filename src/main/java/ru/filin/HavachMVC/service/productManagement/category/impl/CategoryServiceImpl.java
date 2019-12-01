@@ -2,6 +2,7 @@ package ru.filin.HavachMVC.service.productManagement.category.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import ru.filin.HavachMVC.model.productManagement.entities.Category;
 import ru.filin.HavachMVC.model.productManagement.repositories.category.CategoryRepository;
 import ru.filin.HavachMVC.service.productManagement.category.CategoryService;
@@ -45,5 +46,27 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Long save(Category obj) {
         return categoryRepository.save(obj);
+    }
+
+    @Override
+    public void addCategory(String title, String parentIdStr) {
+        long parentId = -1;
+        if (!StringUtils.isEmpty(parentId)) {
+            parentId = parseId(parentIdStr);
+        }
+        Category category = new Category(title, parentId);
+        categoryRepository.save(category);
+    }
+
+    private long parseId(String id) {
+        StringBuilder idString = new StringBuilder();
+        for (int i = 0; i < id.length(); i++) {
+            if (Character.isDigit(id.charAt(i))) {
+                idString.append(id.charAt(i));
+            } else {
+                break;
+            }
+        }
+        return Long.parseLong(idString.toString());
     }
 }

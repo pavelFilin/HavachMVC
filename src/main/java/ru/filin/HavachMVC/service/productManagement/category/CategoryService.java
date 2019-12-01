@@ -5,4 +5,6 @@ import ru.filin.HavachMVC.service.BaseService;
 
 public interface CategoryService extends BaseService<Category> {
     Category findByTitle(String title);
+
+    void addCategory(String title, String id);
 }

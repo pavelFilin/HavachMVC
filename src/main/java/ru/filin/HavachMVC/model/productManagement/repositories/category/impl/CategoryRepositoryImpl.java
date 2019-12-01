@@ -51,7 +51,12 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     @Override
     public Long save(Category obj) {
         String saveCategory = "INSERT INTO category (title, parent_id) VALUES (?, ?)";
-        jdbcTemplate.update(saveCategory, obj.getTitle(), obj.getParentId());
+        if (obj.getParentId() > 0) {
+            jdbcTemplate.update(saveCategory, obj.getTitle(), obj.getParentId());
+        } else {
+
+            jdbcTemplate.update(saveCategory, obj.getTitle(), null);
+        }
         return 0L;
     }
 }

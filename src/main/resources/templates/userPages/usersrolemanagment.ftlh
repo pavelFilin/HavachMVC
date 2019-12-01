@@ -8,16 +8,14 @@
             </div>
             <div class="col-md-9">
                 <div class="row">
-                    <table class="table table-light text-dark ">
-                        <thead>
-                        <tr>
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
                             <th>Email</th>
                             <th>First Name</th>
                             <th>Second Name</th>
                             <th>Role</th>
-                        </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="table-striped">
                         <#list users as user>
                             <tr>
                                 <td><a href="/user/${user.id}">${user.email}</a></td>

@@ -15,4 +15,10 @@ public class Category {
         this.title = title;
         this.parentId = parentId;
     }
+
+    public Category(String title, long parentId) {
+        this.id = id;
+        this.title = title;
+        this.parentId = parentId;
+    }
 }
