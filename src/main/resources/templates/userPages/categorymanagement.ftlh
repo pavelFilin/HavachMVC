@@ -67,7 +67,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </@c.page>
