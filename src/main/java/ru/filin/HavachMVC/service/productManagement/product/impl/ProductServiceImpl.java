@@ -37,4 +37,9 @@ public class ProductServiceImpl implements ProductService {
     public Long save(Product obj) {
         return productRepository.save(obj);
     }
+
+    @Override
+    public List<Product> findByCategoryId(long category_id) {
+        return productRepository.findByCategoryId(category_id);
+    }
 }

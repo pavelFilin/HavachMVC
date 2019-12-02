@@ -9,7 +9,7 @@ import ru.filin.HavachMVC.service.productManagement.product.ProductService;
 import java.util.List;
 
 @RestController
-@RequestMapping("product")
+@RequestMapping("/product/rest")
 public class ProductRestControllerImpl implements ProductRestController {
 
     private ProductService productService;

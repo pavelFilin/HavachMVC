@@ -73,4 +73,9 @@ public class ProductRepositoryImpl implements ProductRepository {
                 parameters));
     }
 
+    @Override
+    public List<Product> findByCategoryId(long category_id) {
+        String findProductByCategoryId = "SELECT * FROM products WHERE category_id = ?";
+        return jdbcTemplate.query(findProductByCategoryId, new Object[]{category_id}, ROW_MAPPER);
+    }
 }

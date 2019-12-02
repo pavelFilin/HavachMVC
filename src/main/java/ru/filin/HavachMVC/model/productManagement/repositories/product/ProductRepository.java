@@ -6,6 +6,7 @@ import ru.filin.HavachMVC.model.productManagement.entities.Category;
 import ru.filin.HavachMVC.model.productManagement.entities.Product;
 
 import java.sql.ResultSet;
+import java.util.List;
 
 public interface ProductRepository extends BaseRepository<Product> {
     RowMapper<Product> ROW_MAPPER = (ResultSet resultSet, int rowNum) -> {
@@ -20,4 +21,5 @@ public interface ProductRepository extends BaseRepository<Product> {
         );
     };
 
+    List<Product> findByCategoryId(long category_id);
 }

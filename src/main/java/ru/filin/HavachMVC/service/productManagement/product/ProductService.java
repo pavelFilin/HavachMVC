@@ -7,4 +7,5 @@ import ru.filin.HavachMVC.model.productManagement.entities.Product;
 import java.util.List;
 
 public interface ProductService extends BaseRepository<Product> {
+    List<Product> findByCategoryId(long category_id);
 }
