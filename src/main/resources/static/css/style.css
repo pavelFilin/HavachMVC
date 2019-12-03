@@ -34,3 +34,21 @@
     padding-bottom: 40%;
 }
 
+.product-attr {
+    font-size: 2em;
+}
+
+.product-name {
+    font-size: 45px;
+    font-family: "Bebas Neue";
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.admin-nav-link {
+    color: #d60101;
+}
+
+.admin-nav-link:hover {
+    color: #5b0303;
+}

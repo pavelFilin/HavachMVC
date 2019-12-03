@@ -135,8 +135,15 @@ public class UserRepositoryImpl implements UserRepository {
                 "   usr (id, first_name, last_name, password, email, active) " +
                 "VALUES (?,?,?,?,?,?); ";
 
-        //todo save_user
-        jdbcTemplate.update(saveUser, userId, obj.getFirstName(), obj.getLastName(), obj.getPassword(), obj.getEmail(), obj.isActive());
+        jdbcTemplate.update(
+                saveUser,
+                userId,
+                obj.getFirstName(),
+                obj.getLastName(),
+                obj.getPassword(),
+                obj.getEmail(),
+                obj.isActive()
+        );
 
         String saveRoles = "INSERT INTO " +
                 "user_roles (user_id, role_id) " +

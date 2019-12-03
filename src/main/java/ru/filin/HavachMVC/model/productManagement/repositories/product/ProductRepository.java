@@ -2,7 +2,6 @@ package ru.filin.HavachMVC.model.productManagement.repositories.product;
 
 import org.springframework.jdbc.core.RowMapper;
 import ru.filin.HavachMVC.model.BaseRepository;
-import ru.filin.HavachMVC.model.productManagement.entities.Category;
 import ru.filin.HavachMVC.model.productManagement.entities.Product;
 
 import java.sql.ResultSet;
@@ -17,7 +16,8 @@ public interface ProductRepository extends BaseRepository<Product> {
                 resultSet.getLong("details_id"),
                 resultSet.getInt("stock"),
                 resultSet.getBoolean("active"),
-                resultSet.getString("photo")
+                resultSet.getString("photo"),
+                resultSet.getLong("category_id")
         );
     };
 

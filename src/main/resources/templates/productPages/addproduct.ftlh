@@ -8,7 +8,7 @@
             </div>
             <div class="col-md-9">
                 <div class="shadow p-5">
-                    <form>
+                    <form action="/product/management" method="POST" enctype="multipart/form-data">
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="product-name">Name</label>
@@ -48,7 +48,7 @@
                         <hr>
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="product-photo-file-input"
+                                <input name="file" type="file" class="custom-file-input" id="product-photo-file-input"
                                        aria-describedby="product-photo-reset">
                                 <label class="custom-file-label" for="product-photo-file-input"
                                        id="product-photo-file-label">Choose

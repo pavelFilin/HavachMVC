@@ -6,8 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.filin.HavachMVC.model.productManagement.entities.Product;
+import ru.filin.HavachMVC.service.productManagement.category.CategoryService;
 import ru.filin.HavachMVC.service.productManagement.product.ProductService;
 
 import java.util.List;
@@ -15,17 +15,27 @@ import java.util.List;
 @Controller
 @RequestMapping("/product")
 public class ProductController {
+
     private ProductService productService;
+
+    private CategoryService categoryService;
 
     @Autowired
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
-    @GetMapping("{category_id}")
-    public  String getProductsByCategory(@PathVariable long category_id, Model model) {
-        List<Product> products = productService.findByCategoryId(category_id);
+    @GetMapping("productlist/{categoryId}")
+    public  String getProductsByCategory(@PathVariable long categoryId, Model model) {
+        List<Product> products = productService.findByCategoryId(categoryId);
         model.addAttribute("products", products);
         return "shopPages/productlist";
+    }
+
+    @GetMapping("{productId}")
+    public String getProduct(@PathVariable long productId, Model model) {
+        Product product = productService.getById(productId);
+        model.addAttribute("product", product);
+        return "productPages/productview";
     }
 }

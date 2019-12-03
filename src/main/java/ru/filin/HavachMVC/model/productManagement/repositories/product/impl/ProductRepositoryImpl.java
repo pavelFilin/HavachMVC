@@ -1,20 +1,12 @@
 package ru.filin.HavachMVC.model.productManagement.repositories.product.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.filin.HavachMVC.model.productManagement.entities.Product;
 import ru.filin.HavachMVC.model.productManagement.repositories.product.ProductRepository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class ProductRepositoryImpl implements ProductRepository {
@@ -48,29 +40,58 @@ public class ProductRepositoryImpl implements ProductRepository {
                 obj.getName(),
                 obj.getPrice(),
                 obj.getDescription(),
-                obj.getDetails_id(),
+                obj.getDetailsId(),
                 obj.getStock(),
                 obj.isActive(),
                 obj.getPhoto(),
-                obj.getId()
+                obj.getId(),
+                obj.getCategoryId()
         );
     }
 
     @Override
     public Long save(Product obj) {
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        jdbcInsert.withTableName("product").usingGeneratedKeyColumns(
-                "Primary_key");
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("name", obj.getName());
-        parameters.put("price", obj.getPrice());
-        parameters.put("description", obj.getDescription());
-        parameters.put("details_id", obj.getDetails_id());
-        parameters.put("stock", obj.getStock());
-        parameters.put("active", obj.isActive());
-        parameters.put("photo", obj.getPrice());
-        return (Long) jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(
-                parameters));
+
+        String getProductId = "SELECT nextval(pg_get_serial_sequence('products', 'id'))";
+
+        long productId = jdbcTemplate.query(getProductId, rs -> {
+            rs.next();
+            return rs.getLong("nextval");
+        });
+
+        String productSave = "INSERT INTO " +
+                "products (id, description, price, details_id, stock, photo, name, category_id, active) " +
+                "VALUES (?,?,?,?,?,?,?,?,?);";
+
+        jdbcTemplate.update(
+                productSave,
+                productId,
+                obj.getDescription(),
+                obj.getPrice(),
+                obj.getDetailsId(),
+                obj.getStock(),
+                obj.getPhoto(),
+                obj.getName(),
+                obj.getCategoryId(),
+                obj.isActive()
+        );
+
+
+        return productId;
+//        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+//        jdbcInsert.withTableName("product").usingGeneratedKeyColumns(
+//                "Primary_key");
+//        Map<String, Object> parameters = new HashMap<>();
+//        parameters.put("name", obj.getName());
+//        parameters.put("price", obj.getPrice());
+//        parameters.put("description", obj.getDescription());
+//        parameters.put("details_id", obj.getDetailsId());
+//        parameters.put("stock", obj.getStock());
+//        parameters.put("active", obj.isActive());
+//        parameters.put("photo", obj.getPhoto());
+//        parameters.put("category_id", obj.getCategoryId());
+//        return (Long) jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(
+//                parameters));
     }
 
     @Override

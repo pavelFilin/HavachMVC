@@ -7,7 +7,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                     <div class="card text-white border-success mb-3">
                         <div class="card-body box">
-                            <a class="badge badge-success" href="/productlist/${product.id}">${product.name}</a>
+                            <a class="badge badge-success" href="/product/${product.id}">${product.name}</a>
                         </div>
                     </div>
                 </div>
