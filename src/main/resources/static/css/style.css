@@ -17,7 +17,8 @@
     width: 100px;
 }
 
-.category-display td {
+.category-display td,
+.admin-product-table td {
     text-align: center;
     vertical-align: middle;
 }
@@ -51,4 +52,8 @@
 
 .admin-nav-link:hover {
     color: #5b0303;
+}
+
+.photo-table-product-list {
+    width: 100px;
 }
