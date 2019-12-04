@@ -29,12 +29,7 @@ public class ProductController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("productlist/{categoryId}")
-    public  String getProductsByCategory(@PathVariable long categoryId, Model model) {
-        List<Product> products = productService.findByCategoryId(categoryId);
-        model.addAttribute("products", products);
-        return "shopPages/productlist";
-    }
+
 
     @GetMapping("{productId}")
     public String getProduct(@PathVariable long productId, Model model) {

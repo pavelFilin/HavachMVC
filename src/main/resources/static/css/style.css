@@ -57,3 +57,12 @@
 .photo-table-product-list {
     width: 100px;
 }
+
+.product-name-list {
+    font-size: 2rem;
+}
+
+.product-price-list{
+    font-size: 2rem;
+    margin-bottom: -15px;
+}
