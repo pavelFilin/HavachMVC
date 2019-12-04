@@ -3,9 +3,11 @@ package ru.filin.HavachMVC.controller.productManagement.product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.filin.HavachMVC.controller.DTO.ProductDTO;
 import ru.filin.HavachMVC.model.productManagement.entities.Category;
 import ru.filin.HavachMVC.model.productManagement.entities.Product;
@@ -30,7 +32,6 @@ public class ProductController {
     }
 
 
-
     @GetMapping("{productId}")
     public String getProduct(@PathVariable long productId, Model model) {
         Product product = productService.getById(productId);
@@ -39,13 +40,24 @@ public class ProductController {
     }
 
     @GetMapping("adminproductlist")
-    public String getAdminProductList(Model model) {
-        List<Product> products = productService.getAll();
+    public String getAdminProductList(
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String active,
+            Model model
+    ) {
+        List<Product> products = null;
         List<Category> categories = categoryService.getAll();
+        if (StringUtils.isEmpty(filter) && StringUtils.isEmpty(active)) {
+            products = productService.getAll();
 
+        } else {
+            products = productService.getByNameAndActive(filter, active);
+        }
         List<ProductDTO> productDTOS = products.stream().map(product -> fillCategory(product, categories)).collect(Collectors.toList());
-
         model.addAttribute("products", productDTOS);
+
+        model.addAttribute("filter", filter);
+        model.addAttribute("active", active);
         return "productPages/adminproductlist";
     }
 

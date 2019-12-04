@@ -67,4 +67,9 @@ public class ProductServiceImpl implements ProductService {
         product.setPhoto(path);
         return productRepository.save(product);
     }
+
+    @Override
+    public List<Product> getByNameAndActive(String name, String active) {
+        return productRepository.getByNameAndActive(name, active);
+    }
 }

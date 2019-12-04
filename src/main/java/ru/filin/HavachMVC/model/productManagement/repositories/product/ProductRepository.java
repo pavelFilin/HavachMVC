@@ -22,4 +22,6 @@ public interface ProductRepository extends BaseRepository<Product> {
     };
 
     List<Product> findByCategoryId(long category_id);
+
+    List<Product> getByNameAndActive(String name, String active);
 }

@@ -12,4 +12,6 @@ public interface ProductService extends BaseRepository<Product> {
     List<Product> findByCategoryId(long category_id);
 
     long add(Product product, MultipartFile file, String category) throws IOException;
+
+    List<Product> getByNameAndActive(String name, String active);
 }

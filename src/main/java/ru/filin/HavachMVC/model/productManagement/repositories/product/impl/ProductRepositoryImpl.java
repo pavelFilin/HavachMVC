@@ -3,6 +3,7 @@ package ru.filin.HavachMVC.model.productManagement.repositories.product.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 import ru.filin.HavachMVC.model.productManagement.entities.Product;
 import ru.filin.HavachMVC.model.productManagement.repositories.product.ProductRepository;
 
@@ -10,8 +11,13 @@ import java.util.List;
 
 @Repository
 public class ProductRepositoryImpl implements ProductRepository {
-    @Autowired
+
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public ProductRepositoryImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public List<Product> getAll() {
@@ -52,20 +58,20 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Long save(Product obj) {
 
-        String getProductId = "SELECT nextval(pg_get_serial_sequence('products', 'id'))";
+        String getContactsId = "SELECT nextval(pg_get_serial_sequence('products', 'id'))";
 
-        long productId = jdbcTemplate.query(getProductId, rs -> {
+        long contactsId = jdbcTemplate.query(getContactsId, rs -> {
             rs.next();
             return rs.getLong("nextval");
         });
 
-        String productSave = "INSERT INTO " +
+        String saveContacts = "INSERT INTO " +
                 "products (id, description, price, details_id, stock, photo, name, category_id, active) " +
                 "VALUES (?,?,?,?,?,?,?,?,?);";
 
         jdbcTemplate.update(
-                productSave,
-                productId,
+                saveContacts,
+                contactsId,
                 obj.getDescription(),
                 obj.getPrice(),
                 obj.getDetailsId(),
@@ -75,28 +81,28 @@ public class ProductRepositoryImpl implements ProductRepository {
                 obj.getCategoryId(),
                 obj.isActive()
         );
-
-
-        return productId;
-//        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-//        jdbcInsert.withTableName("product").usingGeneratedKeyColumns(
-//                "Primary_key");
-//        Map<String, Object> parameters = new HashMap<>();
-//        parameters.put("name", obj.getName());
-//        parameters.put("price", obj.getPrice());
-//        parameters.put("description", obj.getDescription());
-//        parameters.put("details_id", obj.getDetailsId());
-//        parameters.put("stock", obj.getStock());
-//        parameters.put("active", obj.isActive());
-//        parameters.put("photo", obj.getPhoto());
-//        parameters.put("category_id", obj.getCategoryId());
-//        return (Long) jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(
-//                parameters));
+        return contactsId;
     }
 
     @Override
     public List<Product> findByCategoryId(long category_id) {
         String findProductByCategoryId = "SELECT * FROM products WHERE category_id = ?";
         return jdbcTemplate.query(findProductByCategoryId, new Object[]{category_id}, ROW_MAPPER);
+    }
+
+    @Override
+    public List<Product> getByNameAndActive(String name, String active) {
+
+        if (StringUtils.isEmpty(active) || "none".equals(active)) {
+            String findProductByCategoryId = "SELECT * FROM products WHERE name like ?";
+            return jdbcTemplate.query(findProductByCategoryId, new Object[]{"%" + name+ "%"}, ROW_MAPPER);
+        } else {
+            boolean a = false;
+            if ("active".equals(active)) {
+                a = true;
+            }
+            String findProductByCategoryId = "SELECT * FROM products WHERE name like ? and active = ?";
+            return jdbcTemplate.query(findProductByCategoryId, new Object[]{"%" + name+ "%", a}, ROW_MAPPER);
+        }
     }
 }

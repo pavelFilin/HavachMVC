@@ -12,6 +12,7 @@ import ru.filin.HavachMVC.service.productManagement.category.CategoryService;
 import ru.filin.HavachMVC.service.productManagement.product.ProductService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("catalog")
@@ -37,6 +38,7 @@ public class CatalogController {
     @GetMapping("/productlist/{categoryId}")
     public  String getProductsByCategory(@PathVariable long categoryId, Model model) {
         List<Product> products = productService.findByCategoryId(categoryId);
+        products = products.stream().filter(p -> p.isActive()).collect(Collectors.toList());
         model.addAttribute("products", products);
         return "shopPages/productlist";
     }
