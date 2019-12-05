@@ -15,4 +15,9 @@ public interface CartRepository extends BaseRepository<Cart> {
                 resultSet.getInt("total_price")
         );
     };
+
+    Cart getByUserId(long userId);
+
+    void addNewItem(Cart cart, long productId, int quantity);
+
 }

@@ -3,6 +3,7 @@ package ru.filin.HavachMVC.model.orderManagement.repositories.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.filin.HavachMVC.model.orderManagement.entities.Cart;
 import ru.filin.HavachMVC.model.orderManagement.repositories.CartRepository;
 
@@ -38,12 +39,10 @@ public class CartRepositoryImpl implements CartRepository {
 
     @Override
     public void update(Cart obj) {
-        String getAllCart = "UPDATE cart SET user_id = ?, total_price = ?, count_item = ? WHERE id = ?";
+        String getAllCart = "UPDATE cart c SET user_id = ?  WHERE id = ?";
         jdbcTemplate.update(getAllCart,
                 new Object[]{
                         obj.getUserId(),
-                        obj.getTotalPrice(),
-                        obj.getCountItem(),
                         obj.getId()
                 }
         );
@@ -69,5 +68,34 @@ public class CartRepositoryImpl implements CartRepository {
         );
 
         return cartId;
+    }
+
+    @Override
+    public Cart getByUserId(long userId) {
+        String getCartById = "SELECT * FROM cart WHERE user_id = ?";
+        return jdbcTemplate.queryForObject(getCartById, new Object[]{userId}, ROW_MAPPER);
+    }
+
+    @Override
+    public void addNewItem(Cart cart, long productId, int quantity) {
+        addNewItemTransaction(cart, productId, quantity);
+    }
+
+    @Transactional
+    protected void addNewItemTransaction(Cart cart, long product_id, int quantity) {
+
+        String addCartItem = "INSERT INTO cart_item (cart_id, product_id, quantity) values (?,?,?)";
+        jdbcTemplate.update(addCartItem);
+
+        update(cart);
+    }
+
+    @Transactional
+    protected void updateNewItemTransaction(Cart cart, long product_id, int quantity) {
+
+        String addCartItem = "UPDATE cart_item SET cart_id = ?, product_id = ?, quantity = ? WHERE id = ?";
+        jdbcTemplate.update(addCartItem);
+
+        update(cart);
     }
 }
