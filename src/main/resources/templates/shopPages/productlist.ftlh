@@ -13,8 +13,12 @@
                         </div>
                         <div class="card-footer text-muted">
                             <div class="ml-1 mb-3 row col-12">
-                                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                                <button type="submit" class="btn btn-primary btn-lg btn-block mt-3">Pick to cart</button>
+                                <form action="/cart/add/" method="POST" class="col-12">
+                                    <input type="hidden" name="productId" value="${product.id}"/>
+                                    <input type="hidden" name="quantity" value="1"/>
+                                    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block mt-3">Pick to cart</button>
+                                </form>
                             </div>
                         </div>
                     </div>

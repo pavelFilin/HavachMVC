@@ -1,16 +1,15 @@
 package ru.filin.HavachMVC.model.orderManagement.repositories.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import ru.filin.HavachMVC.model.orderManagement.entities.Cart;
-import ru.filin.HavachMVC.model.orderManagement.repositories.CartRepository;
+import ru.filin.HavachMVC.model.orderManagement.entities.CartItem;
 
 import java.util.List;
 
 @Repository
-public class CartRepositoryImpl implements CartRepository {
+public class CartRepositoryImpl {
 
     private JdbcTemplate jdbcTemplate;
 
@@ -19,83 +18,47 @@ public class CartRepositoryImpl implements CartRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Override
-    public List<Cart> getAll() {
-        String getAllCart = "SELECT * FROM cart";
-        return jdbcTemplate.query(getAllCart, ROW_MAPPER);
+    public List<CartItem> findCartsByUser(long userId) {
+        String getCartQuery = "SELECT * FROM cart_item WHERE user_id = ?";
+        return jdbcTemplate.query(
+                getCartQuery,
+                new Object[]{userId},
+                (rs, rowNum) -> new CartItem(
+                        rs.getLong("user_id"),
+                        rs.getLong("product_id"),
+                        rs.getInt("quantity")
+                ));
     }
 
-    @Override
-    public Cart getById(long id) {
-        String getCartById = "SELECT * FROM cart WHERE id = ?";
-        return jdbcTemplate.queryForObject(getCartById, new Object[]{id}, ROW_MAPPER);
+    public CartItem findCartByUserAndProduct(long userId, long productId) {
+        String getCartQuery = "SELECT * FROM cart_item WHERE user_id = ? AND product_id = ?";
+        CartItem cartItems = jdbcTemplate.queryForObject(getCartQuery, new Object[]{userId, productId}, (rs, rowNum) -> new CartItem(rs.getLong("user_id"), rs.getLong("product_id"), rs.getInt("quantity")));
+
+        return cartItems;
     }
 
-    @Override
-    public void delete(long id) {
-        String deleteCart = "DELETE FROM cart WHERE id = ?";
-        jdbcTemplate.update(deleteCart, new Object[]{id});
+    public void saveCartItem(CartItem cart) {
+        CartItem cartFromDb = null;
+        try {
+            cartFromDb = findCartByUserAndProduct(cart.getUserId(), cart.getProductId());
+        } catch (EmptyResultDataAccessException e) {
+        }
+
+        if (cartFromDb == null) {
+            insertCartItem(cart);
+        } else {
+            cart.setId(cartFromDb.getId());
+            updateCartItem(cart);
+        }
     }
 
-    @Override
-    public void update(Cart obj) {
-        String getAllCart = "UPDATE cart c SET user_id = ?  WHERE id = ?";
-        jdbcTemplate.update(getAllCart,
-                new Object[]{
-                        obj.getUserId(),
-                        obj.getId()
-                }
-        );
+    private void insertCartItem(CartItem cart) {
+        String insertCartItem = "INSERT INTO  cart_item (user_id, product_id, quantity) VALUES (?, ?, ?)";
+        jdbcTemplate.update(insertCartItem, cart.getUserId(), cart.getProductId(), cart.getQuantity());
     }
 
-    @Override
-    public Long save(Cart obj) {
-        String getCartId = "SELECT nextval(pg_get_serial_sequence('cart', 'id'))";
-
-        long cartId = jdbcTemplate.query(getCartId, rs -> {
-            rs.next();
-            return rs.getLong("nextval");
-        });
-
-        String saveCart = "INSERT INTO cart (id, user_id, total_price, count_item) VALUES (?,?,?,?)";
-        jdbcTemplate.update(saveCart,
-                new Object[]{
-                        cartId,
-                        obj.getUserId(),
-                        obj.getTotalPrice(),
-                        obj.getCountItem()
-                }
-        );
-
-        return cartId;
-    }
-
-    @Override
-    public Cart getByUserId(long userId) {
-        String getCartById = "SELECT * FROM cart WHERE user_id = ?";
-        return jdbcTemplate.queryForObject(getCartById, new Object[]{userId}, ROW_MAPPER);
-    }
-
-    @Override
-    public void addNewItem(Cart cart, long productId, int quantity) {
-        addNewItemTransaction(cart, productId, quantity);
-    }
-
-    @Transactional
-    protected void addNewItemTransaction(Cart cart, long product_id, int quantity) {
-
-        String addCartItem = "INSERT INTO cart_item (cart_id, product_id, quantity) values (?,?,?)";
-        jdbcTemplate.update(addCartItem);
-
-        update(cart);
-    }
-
-    @Transactional
-    protected void updateNewItemTransaction(Cart cart, long product_id, int quantity) {
-
-        String addCartItem = "UPDATE cart_item SET cart_id = ?, product_id = ?, quantity = ? WHERE id = ?";
-        jdbcTemplate.update(addCartItem);
-
-        update(cart);
+    private void updateCartItem(CartItem cart) {
+        String insertCartItem = "UPDATE cart_item SET user_id = ?, product_id = ?, quantity = ? WHERE id = ?";
+        jdbcTemplate.update(insertCartItem, cart.getUserId(), cart.getProductId(), cart.getQuantity(), cart.getId());
     }
 }

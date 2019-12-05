@@ -2,62 +2,35 @@ package ru.filin.HavachMVC.service.orderManagement.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.filin.HavachMVC.model.orderManagement.entities.Cart;
-import ru.filin.HavachMVC.model.orderManagement.repositories.CartRepository;
-import ru.filin.HavachMVC.service.orderManagement.CartService;
+import ru.filin.HavachMVC.model.orderManagement.entities.CartItem;
+import ru.filin.HavachMVC.model.orderManagement.repositories.impl.CartRepositoryImpl;
 
 import java.util.List;
 
 @Service
-public class CartServiceImpl implements CartService {
+public class CartServiceImpl {
 
-    private CartRepository cartRepository;
+    private CartRepositoryImpl cartRepository;
 
     @Autowired
-    public CartServiceImpl(CartRepository cartRepository) {
+    public CartServiceImpl(CartRepositoryImpl cartRepository) {
         this.cartRepository = cartRepository;
     }
 
-    @Override
-    public List<Cart> getAll() {
-        return cartRepository.getAll();
+    public List<CartItem> findCartsByUser(long userId) {
+        return cartRepository.findCartsByUser(userId);
     }
 
-    @Override
-    public Cart getById(long id) {
-        return cartRepository.getById(id);
+    public CartItem findCartByUserAndProduct(long userId, long productId) {
+        return cartRepository.findCartByUserAndProduct(userId, productId);
     }
 
-    @Override
-    public void delete(long id) {
-        cartRepository.delete(id);
+    public void saveCartItem(CartItem cart) {
+        cartRepository.saveCartItem(cart);
     }
 
-    @Override
-    public void update(Cart obj) {
-        cartRepository.update(obj);
+    public void saveCartItem(long userId, long productId, int quantity) {
+        CartItem cartItem = new CartItem(userId, productId, quantity);
+        saveCartItem(cartItem);
     }
-
-    @Override
-    public Long save(Cart obj) {
-        return cartRepository.save(obj);
-    }
-
-    @Override
-    public void addNewCartItem(long userId, long productId, int quantity) {
-        Cart cart = cartRepository.getByUserId(userId);
-        if (cart == null) {
-            cart  = new Cart(userId, 0, 0);
-            long cartId = cartRepository.save(cart);
-            cart.setId(cartId);
-        }
-
-        cartRepository.addNewItem(cart, productId, quantity);
-    }
-
-    @Override
-    public Cart getByUserId(long userId) {
-        return cartRepository.getByUserId(userId);
-    }
-
 }
