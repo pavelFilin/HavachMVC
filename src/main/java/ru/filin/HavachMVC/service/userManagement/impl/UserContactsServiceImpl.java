@@ -1,6 +1,7 @@
 package ru.filin.HavachMVC.service.userManagement.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import ru.filin.HavachMVC.model.userManagement.entities.UserContacts;
 import ru.filin.HavachMVC.model.userManagement.repositories.UserContactsRepository;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Service
 public class UserContactsServiceImpl implements UserContactsService {
+
     private UserContactsRepository userContactsRepository;
 
     @Autowired
@@ -41,5 +43,16 @@ public class UserContactsServiceImpl implements UserContactsService {
     @Override
     public Long save(UserContacts obj) {
         return userContactsRepository.save(obj);
+    }
+
+    @Override
+    public UserContacts getByUserId(long id) {
+        UserContacts byUserId = null;
+        try {
+            byUserId = userContactsRepository.getByUserId(id);
+        } catch (EmptyResultDataAccessException e) {
+
+        }
+        return byUserId;
     }
 }

@@ -15,4 +15,6 @@ public interface UserContactsRepository extends BaseRepository<UserContacts> {
                 resultSet.getString("address")
         );
     };
+
+    UserContacts getByUserId(long id);
 }

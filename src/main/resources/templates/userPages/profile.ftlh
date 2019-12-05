@@ -59,6 +59,28 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
+                                        <label for="phone" class="col-4 col-form-label">Phone</label>
+                                        <div class="col-8">
+                                            <input id="phone" name="phone"
+                                                    <#if userContacts??>
+                                                   value="${userContacts.phone?if_exists}"
+                                                   </#if>
+                                                   placeholder="phone"
+                                                   class="form-control here" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="address" class="col-4 col-form-label">Address</label>
+                                        <div class="col-8">
+                                            <input id="address" name="address"
+                                                    <#if userContacts??>
+                                                   value="${userContacts.address?if_exists}"
+                                                   </#if>
+                                                   placeholder="Address"
+                                                   class="form-control here" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
                                         <div class="offset-4 col-8">
                                             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                             <button name="submit" type="submit" class="btn btn-primary">Update My

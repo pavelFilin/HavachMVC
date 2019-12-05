@@ -112,7 +112,7 @@ public class UserRepositoryImpl implements UserRepository {
         String roleClear = "DELETE FROM user_roles WHERE user_id = ?";
         jdbcTemplate.update(roleClear, user.getId());
 
-        String updateRole = "INSERT INTO use1r_roles " +
+        String updateRole = "INSERT INTO user_roles " +
                 "(user_id, role_id) " +
                 "values (?, ?)";
 

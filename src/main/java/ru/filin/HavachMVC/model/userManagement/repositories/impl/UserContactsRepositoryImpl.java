@@ -39,10 +39,9 @@ public class UserContactsRepositoryImpl implements UserContactsRepository {
     @Override
     public void update(UserContacts obj) {
         String getAllContacts = "UPDATE user_contacts SET user_id = ?, phone = ? , address = ? WHERE id = ?";
-        jdbcTemplate.queryForObject(
+        jdbcTemplate.update(
                 getAllContacts,
-                new Object[]{obj.getUserId(), obj.getPhone(), obj.getAddress(), obj.getId()},
-                ROW_MAPPER
+                new Object[]{obj.getUserId(), obj.getPhone(), obj.getAddress(), obj.getId()}
         );
     }
 
@@ -56,12 +55,17 @@ public class UserContactsRepositoryImpl implements UserContactsRepository {
         });
 
         String getAllContacts = "INSERT INTO user_contacts (id, user_id, phone, address) VALUES (?,?,?,?)";
-        jdbcTemplate.queryForObject(
+        jdbcTemplate.update(
                 getAllContacts,
-                new Object[]{userId, obj.getUserId(), obj.getPhone(), obj.getAddress()},
-                ROW_MAPPER
+                new Object[]{userId, obj.getUserId(), obj.getPhone(), obj.getAddress()}
         );
 
         return userId;
+    }
+
+    @Override
+    public UserContacts getByUserId(long id) {
+        String getAllContacts = "SELECT * FROM user_contacts WHERE user_id = ?";
+        return jdbcTemplate.queryForObject(getAllContacts, new Object[]{id}, ROW_MAPPER);
     }
 }

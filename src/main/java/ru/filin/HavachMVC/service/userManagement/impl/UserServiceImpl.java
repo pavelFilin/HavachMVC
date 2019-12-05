@@ -1,12 +1,18 @@
 package ru.filin.HavachMVC.service.userManagement.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.filin.HavachMVC.model.userManagement.RoleConstant;
 import ru.filin.HavachMVC.model.userManagement.entities.Role;
 import ru.filin.HavachMVC.model.userManagement.entities.User;
+import ru.filin.HavachMVC.model.userManagement.entities.UserContacts;
 import ru.filin.HavachMVC.model.userManagement.repositories.UserRepository;
+import ru.filin.HavachMVC.service.userManagement.UserContactsService;
 import ru.filin.HavachMVC.service.userManagement.UserService;
 
 import java.util.Arrays;
@@ -18,10 +24,14 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    private UserContactsService userContactsService;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, UserContactsService userContactsService) {
         this.userRepository = userRepository;
+        this.userContactsService = userContactsService;
     }
 
     @Override
@@ -77,5 +87,34 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.update(user);
+    }
+
+    @Override
+    public void updateUserInfo(User user, @AuthenticationPrincipal User userFromDb, @RequestParam(required = false) String phone, @RequestParam(required = false) String address) {
+        if (!StringUtils.isEmpty(user.getFirstName())) {
+            userFromDb.setFirstName(user.getFirstName());
+        }
+
+        if (!StringUtils.isEmpty(user.getLastName())) {
+            userFromDb.setLastName(user.getLastName());
+        }
+
+        if (!StringUtils.isEmpty(user.getPassword())) {
+            userFromDb.setPassword(user.getPassword());
+        }
+
+        if (!StringUtils.isEmpty(phone) || !StringUtils.isEmpty(address)) {
+            UserContacts userContacts = userContactsService.getByUserId(userFromDb.getId());
+            if (userContacts != null) {
+                userContacts.setAddress(address);
+                userContacts.setPhone(phone);
+                userContactsService.update(userContacts);
+            } else {
+                userContacts = new UserContacts(userFromDb.getId(), phone, address);
+                userContactsService.save(userContacts);
+            }
+        }
+
+        update(userFromDb);
     }
 }

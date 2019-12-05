@@ -10,7 +10,8 @@ public interface ProfileController {
     String getProfilePage(@AuthenticationPrincipal User user, Model model);
 
     @PostMapping
-    String updateUser(User user, @AuthenticationPrincipal User userFromDb, Model model);
+    String updateUser(User user, @AuthenticationPrincipal User userFromDb,  String phone,
+                      String address, Model model);
 
     @GetMapping("userlist")
     String getUserList(Model model);
