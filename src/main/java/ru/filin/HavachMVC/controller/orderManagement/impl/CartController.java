@@ -38,9 +38,13 @@ public class CartController {
         List<CartDTO> cartDTOS = cart.stream().map(c -> CartConvector.toCartDTO(c)).collect(Collectors.toList());
         UserContacts userContacts = userContactsService.getByUserId(user.getId());
 
+        int totalQuantity = cartDTOS.stream().mapToInt(CartDTO::getQuantity).sum();
+        int totalPrice = cartDTOS.stream().mapToInt(c -> c.getProduct().getPrice()).sum();
 
         model.addAttribute("cart", cartDTOS);
         model.addAttribute("userContacts", userContacts);
+        model.addAttribute("totalQuantity", totalQuantity);
+        model.addAttribute("totalPrice", totalPrice);
 
         return "orderPages/cart";
     }

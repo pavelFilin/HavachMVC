@@ -16,8 +16,6 @@ public class Order {
 
     private PaymentType paymentType;
 
-    private long paymentId;
-
     private String address;
 
     private int finalPrice;
@@ -32,7 +30,15 @@ public class Order {
         this.userId = userId;
         this.timeCreated = timeCreated;
         this.paymentType = paymentType;
-        this.paymentId = paymentId;
+        this.address = address;
+        this.finalPrice = finalPrice;
+        this.orderStatus = orderStatus;
+    }
+
+    public Order(long userId, Date timeCreated, PaymentType paymentType, String address, int finalPrice, OrderStatus orderStatus) {
+        this.userId = userId;
+        this.timeCreated = timeCreated;
+        this.paymentType = paymentType;
         this.address = address;
         this.finalPrice = finalPrice;
         this.orderStatus = orderStatus;

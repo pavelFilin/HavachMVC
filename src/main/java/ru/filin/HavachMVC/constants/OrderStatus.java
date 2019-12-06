@@ -2,7 +2,7 @@ package ru.filin.HavachMVC.constants;
 
 public enum OrderStatus {
     cart,
-    processing,
+    PROCESSING,
     processed,
     deliver,
     delivered

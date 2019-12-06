@@ -3,10 +3,15 @@ package ru.filin.HavachMVC.model.orderManagement.repositories.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import ru.filin.HavachMVC.model.orderManagement.entities.CartItem;
 import ru.filin.HavachMVC.model.orderManagement.entities.Order;
+import ru.filin.HavachMVC.model.orderManagement.entities.OrderItemFull;
 import ru.filin.HavachMVC.model.orderManagement.repositories.OrderRepository;
+import ru.filin.HavachMVC.model.productManagement.entities.Product;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class OrderRepositoryImpl implements OrderRepository {
@@ -21,13 +26,13 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public List<Order> getAll() {
         String query = "SELECT * FROM order_table";
-        return jdbcTemplate.query(query, ROW_MAPPER);
+        return jdbcTemplate.query(query, OderMapper);
     }
 
     @Override
     public Order getById(long id) {
         String query = "SELECT * FROM order_table WHERE id = ?";
-        return jdbcTemplate.queryForObject(query, new Object[]{id}, ROW_MAPPER);
+        return jdbcTemplate.queryForObject(query, new Object[]{id}, OderMapper);
     }
 
     @Override
@@ -73,5 +78,47 @@ public class OrderRepositoryImpl implements OrderRepository {
                         obj.getOrderStatus(),
                 });
         return orderId;
+    }
+
+    @Override
+    @Transactional
+    public long saveOrderAndOrderItems(Order order, Map<CartItem, Product> cartMap) {
+        Long orderId = save(order);
+        saveCarts(cartMap, orderId);
+        return orderId;
+    }
+
+    @Override
+    public Order getByIdAndUserID(long orderId, long userId) {
+        String query = "SELECT * FROM order_table WHERE id = ? AND user_id = ?";
+        return jdbcTemplate.queryForObject(query, new Object[]{orderId, userId}, OderMapper);
+    }
+
+    @Override
+    public OrderItemFull getOrderItemsOrderIdAndUserId(long orderId, long userId) {
+        String query = "SELECT * FROM order_item WHERE id = ? AND order_id = ?";
+        return jdbcTemplate.queryForObject(query, new Object[]{userId, orderId}, OderItemMapper);
+    }
+
+    private void saveCarts(Map<CartItem, Product> cartMap, Long orderId) {
+        for (Map.Entry<CartItem, Product> entry : cartMap.entrySet()) {
+            saveOrderItem(
+                    entry.getValue().getId(),
+                    orderId,
+                    entry.getKey().getQuantity(),
+                    entry.getValue().getPrice(),
+                    entry.getKey().getQuantity() * entry.getValue().getPrice());
+        }
+    }
+
+    private void saveOrderItem(long productId, long orderId, int quantity, int price, int totalPrice) {
+        String saveOrderItemQuery = "INSERT INTO order_item (order_id, product_id, quantity, price, total_price) VALUES (?,?,?,?,?)";
+        jdbcTemplate.update(
+                saveOrderItemQuery,
+                orderId,
+                productId,
+                quantity,
+                price,
+                totalPrice);
     }
 }
