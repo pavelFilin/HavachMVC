@@ -2,8 +2,10 @@ package ru.filin.HavachMVC.service.orderManagement.impl;
 
 import org.springframework.stereotype.Service;
 import ru.filin.HavachMVC.constants.OrderStatus;
+import ru.filin.HavachMVC.constants.PaymentStatus;
 import ru.filin.HavachMVC.constants.PaymentType;
 import ru.filin.HavachMVC.controller.DTO.OrderDTO;
+import ru.filin.HavachMVC.controller.DTO.OrderItemDTO;
 import ru.filin.HavachMVC.model.orderManagement.entities.CartItem;
 import ru.filin.HavachMVC.model.orderManagement.entities.Order;
 import ru.filin.HavachMVC.model.orderManagement.entities.OrderItemFull;
@@ -15,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl {
@@ -50,9 +53,16 @@ public class OrderServiceImpl {
             finalPrice += entry.getKey().getQuantity() * entry.getValue().getPrice();
         }
 
-        Order order = new Order(userId, new Date(), PaymentType.valueOf(paymentType), address, finalPrice, OrderStatus.PROCESSING);
-        long orderId = saveOrderAndOrderItems(order, cartMap);
-        return orderId;
+        Order order = new Order(userId,
+                new Date(),
+                PaymentType.valueOf(paymentType),
+                count,
+                address,
+                finalPrice,
+                OrderStatus.PROCESSING,
+                PaymentStatus.PENDING
+        );
+        return saveOrderAndOrderItems(order, cartMap);
     }
 
     private long saveOrderAndOrderItems(Order order, Map<CartItem, Product> cartMap) {
@@ -62,7 +72,16 @@ public class OrderServiceImpl {
 
     public OrderDTO getOrderByUserIdAndOrderId(long userId, long orderId) {
         Order order = orderRepository.getByIdAndUserID(orderId, userId);
-        List<OrderItemFull> orderItems  = orderRepository.getOrderItemsOrderIdAndUserId(orderId, userId);
-
+        List<OrderItemFull> orderItems = orderRepository.getOrderItemsOrderIdAndUserId(orderId, userId);
+        List<OrderItemDTO> orderItemDTOS = orderItems.stream()
+                .map(oi -> new OrderItemDTO(
+                        oi.getId(),
+                        productService.getById(oi.getProductId()),
+                        oi.getOrderId(),
+                        oi.getPrice(),
+                        oi.getQuantity(),
+                        oi.getTotalPrice()))
+                .collect(Collectors.toList());
+        return new OrderDTO(order, orderItemDTOS);
     }
 }

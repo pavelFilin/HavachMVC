@@ -2,8 +2,10 @@ package ru.filin.HavachMVC.controller.orderManagement.impl;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import ru.filin.HavachMVC.controller.DTO.OrderDTO;
 import ru.filin.HavachMVC.model.userManagement.entities.User;
 import ru.filin.HavachMVC.service.orderManagement.impl.OrderServiceImpl;
 
@@ -18,8 +20,10 @@ public class OrderController {
     }
 
     @GetMapping({"orderId"})
-    public String getOrder(@AuthenticationPrincipal User user, @PathVariable long orderId) {
-        orderService.getOrderByUserIdAndOrderId(user.getId(), orderId);
+    public String getOrder(@AuthenticationPrincipal User user, @PathVariable long orderId, Model model) {
+        OrderDTO orderDTO = orderService.getOrderByUserIdAndOrderId(user.getId(), orderId);
+        model.addAttribute("order", orderDTO);
+        return "userorder";
     }
 
     @PostMapping
