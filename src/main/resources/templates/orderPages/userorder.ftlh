@@ -5,20 +5,24 @@
         <div class="row">
             <table class="table table-bordered table-hover table-info">
                 <thead class="thead-dark">
-                <th>Products</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Payment Status</th>
-                <th>Payment Type</th>
-                <th class="warning">Order Status</th>
+                <tr>
+                    <th>Products</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Payment Status</th>
+                    <th>Payment Type</th>
+                    <th class="warning">Order Status</th>
+                </tr>
                 </thead>
                 <tbody>
-                <td>${nameOrderItems}</td>
-                <td>${order.quantity}</td>
-                <td>${order.finalPrice}</td>
-                <td>${order.paymentStatus}</td>
-                <td>${order.paymentType}</td>
-                <td class="bg-warning">${order.orderStatus}</td>
+                <tr>
+                    <td>${nameOrderItems}</td>
+                    <td>${order.quantity}</td>
+                    <td>${order.finalPrice}</td>
+                    <td>${order.paymentStatus}</td>
+                    <td>${order.paymentType}</td>
+                    <td class="bg-warning">${order.orderStatus}</td>
+                </tr>
                 </tbody>
             </table>
         </div>

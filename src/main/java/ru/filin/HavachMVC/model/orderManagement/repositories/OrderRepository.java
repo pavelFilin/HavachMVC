@@ -48,4 +48,6 @@ public interface OrderRepository extends BaseRepository<Order> {
     Order findOrderByIdAndUserID(long orderId, long userId);
 
     List<OrderItemFull> findOrderItemsByOrderId(long orderId);
+
+    void changeOrderStatus(long id, OrderStatus orderStatus);
 }

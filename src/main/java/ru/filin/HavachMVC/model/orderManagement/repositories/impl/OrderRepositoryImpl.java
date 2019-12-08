@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import ru.filin.HavachMVC.constants.OrderStatus;
 import ru.filin.HavachMVC.model.orderManagement.entities.CartItem;
 import ru.filin.HavachMVC.model.orderManagement.entities.Order;
 import ru.filin.HavachMVC.model.orderManagement.entities.OrderItemFull;
@@ -100,6 +101,12 @@ public class OrderRepositoryImpl implements OrderRepository {
     public List<OrderItemFull> findOrderItemsByOrderId(long orderId) {
         String query = "SELECT * FROM order_item WHERE order_id = ?";
         return jdbcTemplate.query(query, new Object[]{orderId}, OderItemMapper);
+    }
+
+    @Override
+    public void changeOrderStatus(long id, OrderStatus orderStatus) {
+        String query = "UPDATE order_table SET orderstatus = ? WHERE id = ?";
+        jdbcTemplate.update(query, orderStatus.name(), id);
     }
 
     private void saveCarts(Map<CartItem, Product> cartMap, Long orderId) {

@@ -5,11 +5,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import ru.filin.HavachMVC.constants.OrderStatus;
 import ru.filin.HavachMVC.controller.DTO.OrderDTO;
 import ru.filin.HavachMVC.model.orderManagement.entities.Order;
 import ru.filin.HavachMVC.model.userManagement.entities.User;
 import ru.filin.HavachMVC.service.orderManagement.impl.OrderServiceImpl;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +32,15 @@ public class OrderController {
         orders.sort(Comparator.comparing(Order::getTimeCreated).reversed());
         model.addAttribute("orders", orders);
         return "orderPages/userorderlist";
+    }
+
+    @GetMapping("list")
+    public String getOrdersForAdmin(@AuthenticationPrincipal User user, Model model) {
+        List<Order> orders = orderService.getOrderByUser();
+        orders.sort(Comparator.comparing(Order::getTimeCreated).reversed());
+        model.addAttribute("orders", orders);
+        model.addAttribute("orderStatus", Arrays.asList(OrderStatus.values()));
+        return "orderPages/adminorderlist";
     }
 
     @GetMapping("{orderId}")

@@ -85,4 +85,8 @@ public class OrderServiceImpl {
     public List<Order> getOrderByUser() {
         return orderRepository.getAll();
     }
+
+    public void changeOrderStatus(long id, String orderStatus) {
+        orderRepository.changeOrderStatus(id, OrderStatus.valueOf(orderStatus));
+    }
 }
