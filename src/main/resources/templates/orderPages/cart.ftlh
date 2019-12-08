@@ -14,7 +14,7 @@
                 <#list cart as cartItem>
                     <tr style="max-width: 25px">
                         <td><img class="card-img-top" style="width: 150px"
-                                 src="/img/${cartItem.product.photo?if_exists}"/></td>
+                                 src="/img/${cartItem.product.photo!}"/></td>
                         <td>${cartItem.product.name}</td>
                         <td>${cartItem.quantity}</td>
                         <td>${cartItem.product.price * cartItem.quantity}</td>
@@ -68,10 +68,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                    <button type="submit" class="btn btn-primary btn-lg btn-block mt-3">Buy</button>
-                </div>
+                <#if cart?? && cart?size gt 0>
+                    <div class="row">
+                        <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block mt-3">Buy</button>
+                    </div>
+                </#if>
             </form>
         </div>
     </div>

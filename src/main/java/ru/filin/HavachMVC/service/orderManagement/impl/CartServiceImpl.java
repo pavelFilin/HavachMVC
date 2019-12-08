@@ -33,4 +33,8 @@ public class CartServiceImpl {
         CartItem cartItem = new CartItem(userId, productId, quantity);
         saveCartItem(cartItem);
     }
+
+    public void purgeCartByUser(long userId) {
+        cartRepository.purgeCartByUser(userId);
+    }
 }

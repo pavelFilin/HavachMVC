@@ -63,7 +63,9 @@ public class OrderServiceImpl {
                 OrderStatus.PROCESSING,
                 PaymentStatus.PENDING
         );
-        return saveOrderAndOrderItems(order, cartMap);
+        long orderId = saveOrderAndOrderItems(order, cartMap);
+        cartService.purgeCartByUser(userId);
+        return orderId;
     }
 
     private long saveOrderAndOrderItems(Order order, Map<CartItem, Product> cartMap) {
@@ -73,10 +75,14 @@ public class OrderServiceImpl {
 
     public OrderDTO getOrderByUserIdAndOrderId(long userId, long orderId) {
         Order order = orderRepository.findOrderByIdAndUserID(orderId, userId);
-        List<OrderItemFull> orderItems = orderRepository.findOrderItemsByOrderId(userId);
+        List<OrderItemFull> orderItems = orderRepository.findOrderItemsByOrderId(orderId);
         List<OrderItemDTO> orderItemDTOS = orderItems.stream()
                 .map(oi -> new OrderItemDTO(oi, productService.getById(oi.getProductId())))
                 .collect(Collectors.toList());
         return new OrderDTO(order, orderItemDTOS);
+    }
+
+    public List<Order> getOrderByUser() {
+        return orderRepository.getAll();
     }
 }

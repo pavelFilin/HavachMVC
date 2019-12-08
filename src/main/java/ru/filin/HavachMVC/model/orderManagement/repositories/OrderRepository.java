@@ -25,20 +25,20 @@ public interface OrderRepository extends BaseRepository<Order> {
                 resultSet.getInt("quantity"),
                 resultSet.getString("phone"),
                 resultSet.getString("address"),
-                resultSet.getInt("finalPrice"),
-                OrderStatus.valueOf(resultSet.getString("orderStatus")),
-                PaymentStatus.valueOf(resultSet.getString("paymentStatus"))
+                resultSet.getInt("finalprice"),
+                OrderStatus.valueOf(resultSet.getString("orderstatus")),
+                PaymentStatus.valueOf(resultSet.getString("payment_status"))
         );
     };
 
     RowMapper<OrderItemFull> OderItemMapper = (ResultSet resultSet, int rowNum) -> {
         return new OrderItemFull(
                 resultSet.getLong("id"),
-                resultSet.getLong("productId"),
-                resultSet.getLong("orderId"),
+                resultSet.getLong("product_id"),
+                resultSet.getLong("order_id"),
                 resultSet.getInt("price"),
                 resultSet.getInt("quantity"),
-                resultSet.getInt("totalPrice")
+                resultSet.getInt("total_price")
         );
     };
 

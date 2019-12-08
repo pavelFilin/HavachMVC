@@ -6,8 +6,13 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.filin.HavachMVC.controller.DTO.OrderDTO;
+import ru.filin.HavachMVC.model.orderManagement.entities.Order;
 import ru.filin.HavachMVC.model.userManagement.entities.User;
 import ru.filin.HavachMVC.service.orderManagement.impl.OrderServiceImpl;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/order")
@@ -19,12 +24,23 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @GetMapping({"orderId"})
+    @GetMapping
+    public String getOrders(@AuthenticationPrincipal User user, Model model) {
+        List<Order> orders = orderService.getOrderByUser();
+        orders.sort(Comparator.comparing(Order::getTimeCreated).reversed());
+        model.addAttribute("orders", orders);
+        return "orderPages/userorderlist";
+    }
+
+    @GetMapping("{orderId}")
     public String getOrder(@AuthenticationPrincipal User user, @PathVariable long orderId, Model model) {
         OrderDTO orderDTO = orderService.getOrderByUserIdAndOrderId(user.getId(), orderId);
+
         model.addAttribute("order", orderDTO);
-        return "userorder";
+        model.addAttribute("nameOrderItems", orderDTO.getOrderItems().stream().map(oi -> oi.getProduct().getName()).collect(Collectors.joining(", ")));
+        return "orderPages/userorder";
     }
+
 
     @PostMapping
     public String makeOrder(@AuthenticationPrincipal User user,
