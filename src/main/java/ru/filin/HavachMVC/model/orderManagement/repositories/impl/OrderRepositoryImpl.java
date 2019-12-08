@@ -43,17 +43,17 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public void update(Order obj) {
-        String query = "UPDATE order_table SET user_id = ?, time_created = ?, payment_type = ?, address = ?, finalprice = ?, orderstatus = ? WHERE id = ?";
+        String query = "UPDATE order_table SET user_id = ?, time_created = ?, payment_type = ?, phone = ?, finalprice = ?, orderstatus = ?, payment_status = ? WHERE id = ?";
         jdbcTemplate.update(query,
-                new Object[]{
-                        obj.getUserId(),
-                        obj.getTimeCreated(),
-                        obj.getPaymentType(),
-                        obj.getAddress(),
-                        obj.getFinalPrice(),
-                        obj.getOrderStatus(),
-                        obj.getId()
-                });
+                obj.getUserId(),
+                obj.getTimeCreated(),
+                obj.getPaymentType(),
+                obj.getPhone(),
+                obj.getAddress(),
+                obj.getFinalPrice(),
+                obj.getOrderStatus(),
+                obj.getPaymentStatus(),
+                obj.getId());
     }
 
     @Override
@@ -66,17 +66,19 @@ public class OrderRepositoryImpl implements OrderRepository {
             return rs.getLong("nextval");
         });
 
-        String query = "INSERT INTO order_table (id, user_id, time_created, payment_type, address, finalprice, orderstatus) VALUES (?,?,?,?,?,?,?)";
+        String query = "INSERT INTO order_table (id, user_id, time_created, payment_type, phone, address, quantity, finalprice, orderstatus, payment_status) VALUES (?,?,?,?,?,?,?,?,?,?)";
         jdbcTemplate.update(query,
-                new Object[]{
-                        orderId,
-                        obj.getUserId(),
-                        obj.getTimeCreated(),
-                        obj.getPaymentType(),
-                        obj.getAddress(),
-                        obj.getFinalPrice(),
-                        obj.getOrderStatus(),
-                });
+                orderId,
+                obj.getUserId(),
+                obj.getTimeCreated(),
+                obj.getPaymentType().name(),
+                obj.getPhone(),
+                obj.getAddress(),
+                obj.getQuantity(),
+                obj.getFinalPrice(),
+                obj.getOrderStatus().name(),
+                obj.getPaymentStatus().name()
+        );
         return orderId;
     }
 
@@ -89,15 +91,15 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public Order getByIdAndUserID(long orderId, long userId) {
+    public Order findOrderByIdAndUserID(long orderId, long userId) {
         String query = "SELECT * FROM order_table WHERE id = ? AND user_id = ?";
         return jdbcTemplate.queryForObject(query, new Object[]{orderId, userId}, OderMapper);
     }
 
     @Override
-    public OrderItemFull getOrderItemsOrderIdAndUserId(long orderId, long userId) {
-        String query = "SELECT * FROM order_item WHERE id = ? AND order_id = ?";
-        return jdbcTemplate.queryForObject(query, new Object[]{userId, orderId}, OderItemMapper);
+    public List<OrderItemFull> findOrderItemsByOrderId(long orderId) {
+        String query = "SELECT * FROM order_item WHERE order_id = ?";
+        return jdbcTemplate.query(query, new Object[]{orderId}, OderItemMapper);
     }
 
     private void saveCarts(Map<CartItem, Product> cartMap, Long orderId) {

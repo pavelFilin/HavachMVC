@@ -41,7 +41,7 @@
                         <a class="nav-link" href="/user/profile"><span><i class="fas fa-user-circle"></i></span> ${email}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-danger btn-sm mt-1 mr-2" href="#" id="cart-button">Cart</a>
+                        <a class="btn btn-danger btn-sm mt-1 mr-2" href="/cart" id="cart-button">Cart</a>
                     </li>
                     <li class="nav-item">
                         <@login.logout/>

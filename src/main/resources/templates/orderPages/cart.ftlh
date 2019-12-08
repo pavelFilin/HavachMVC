@@ -31,20 +31,20 @@
         </div>
         <hr>
         <div class="row">
-            <form style="width: 100%">
+            <form style="width: 100%" action="/order" method="POST">
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="phone">Phone</label>
                             <input name="phone" minlength="3" maxlength="15"
-                                   <#if userContacts??>value="${userContacts.phone?if_exists}"</#if> type="text"
+                                   <#if userContacts??>value="${userContacts.phone!}"</#if> type="text"
                                    class="form-control" id="phone" placeholder="phone">
                         </div>
 
                         <div class="form-group">
                             <label for="address">Address</label>
                             <input name="address" minlength="3" maxlength="255"
-                                   <#if userContacts??>value="${userContacts.address?if_exists}"</#if> type="text"
+                                   <#if userContacts??>value="${userContacts.address!}"</#if> type="text"
                                    class="form-control" id="address" placeholder="address">
                         </div>
                     </div>
@@ -53,16 +53,16 @@
                         <div class="row ">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" checked type="radio" name="paymentType" id="cash"
-                                       value="cash">
+                                       value="CASH">
                                 <label class="form-check-label" for="cash">cash</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="paymentType" id="card" value="cad">
+                                <input class="form-check-input" type="radio" name="paymentType" id="card" value="CARD">
                                 <label class="form-check-label" for="card">card</label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="paymentType" id="inlineRadio3"
-                                       value=cardOnSite>
+                                       value=CARD_ON_SITE>
                                 <label class="form-check-label" for="inlineRadio3">card on site</label>
                             </div>
                         </div>
@@ -74,6 +74,5 @@
                 </div>
             </form>
         </div>
-
     </div>
 </@c.page>

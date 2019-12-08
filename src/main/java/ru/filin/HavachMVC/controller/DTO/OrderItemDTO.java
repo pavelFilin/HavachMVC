@@ -1,6 +1,7 @@
 package ru.filin.HavachMVC.controller.DTO;
 
 import lombok.Data;
+import ru.filin.HavachMVC.model.orderManagement.entities.OrderItemFull;
 import ru.filin.HavachMVC.model.productManagement.entities.Product;
 
 @Data
@@ -38,4 +39,8 @@ public class OrderItemDTO {
         this.totalPrice = totalPrice;
     }
 
+    public OrderItemDTO(OrderItemFull orderItem, Product product) {
+        this(orderItem.getId(), product, orderItem.getOrderId(), orderItem.getPrice(), orderItem.getQuantity(), orderItem.getTotalPrice());
+        this.product = product;
+    }
 }

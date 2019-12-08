@@ -23,6 +23,7 @@ public interface OrderRepository extends BaseRepository<Order> {
                 new Date(resultSet.getTimestamp("time_created").getTime()),
                 PaymentType.valueOf(resultSet.getString("payment_type")),
                 resultSet.getInt("quantity"),
+                resultSet.getString("phone"),
                 resultSet.getString("address"),
                 resultSet.getInt("finalPrice"),
                 OrderStatus.valueOf(resultSet.getString("orderStatus")),
@@ -44,7 +45,7 @@ public interface OrderRepository extends BaseRepository<Order> {
 
     long saveOrderAndOrderItems(Order order, Map<CartItem, Product> cartMap);
 
-    Order getByIdAndUserID(long orderId, long userId);
+    Order findOrderByIdAndUserID(long orderId, long userId);
 
-    List<OrderItemFull> getOrderItemsOrderIdAndUserId(long orderId, long userId);
+    List<OrderItemFull> findOrderItemsByOrderId(long orderId);
 }

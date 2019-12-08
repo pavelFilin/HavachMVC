@@ -1,5 +1,6 @@
 package ru.filin.HavachMVC.controller.DTO;
 
+import lombok.Data;
 import ru.filin.HavachMVC.constants.OrderStatus;
 import ru.filin.HavachMVC.constants.PaymentStatus;
 import ru.filin.HavachMVC.constants.PaymentType;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Data
 public class OrderDTO {
 
     private long id;
@@ -27,10 +29,14 @@ public class OrderDTO {
 
     private List<OrderItemDTO> orderItems = new ArrayList<>();
 
+    private String phone;
+
+    private String address;
+
     public OrderDTO() {
     }
 
-    public OrderDTO(Date timeCreated, PaymentType paymentType, int quantity, int finalPrice, OrderStatus orderStatus, PaymentStatus paymentStatus, List<OrderItemDTO> orderItems) {
+    public OrderDTO(Date timeCreated, PaymentType paymentType, int quantity, int finalPrice, OrderStatus orderStatus, PaymentStatus paymentStatus, List<OrderItemDTO> orderItems, String phone, String address) {
         this.timeCreated = timeCreated;
         this.paymentType = paymentType;
         this.quantity = quantity;
@@ -38,9 +44,11 @@ public class OrderDTO {
         this.orderStatus = orderStatus;
         this.paymentStatus = paymentStatus;
         this.orderItems = orderItems;
+        this.phone = phone;
+        this.address = address;
     }
 
-    public OrderDTO(long id, Date timeCreated, PaymentType paymentType, int quantity, int finalPrice, OrderStatus orderStatus, PaymentStatus paymentStatus, List<OrderItemDTO> orderItems) {
+    public OrderDTO(long id, Date timeCreated, PaymentType paymentType, int quantity, int finalPrice, OrderStatus orderStatus, PaymentStatus paymentStatus, List<OrderItemDTO> orderItems, String phone, String address) {
         this.id = id;
         this.timeCreated = timeCreated;
         this.paymentType = paymentType;
@@ -49,6 +57,8 @@ public class OrderDTO {
         this.orderStatus = orderStatus;
         this.paymentStatus = paymentStatus;
         this.orderItems = orderItems;
+        this.phone = phone;
+        this.address = address;
     }
 
     public OrderDTO(Order order, List<OrderItemDTO> orderItems) {
@@ -59,7 +69,9 @@ public class OrderDTO {
                 order.getFinalPrice(),
                 order.getOrderStatus(),
                 order.getPaymentStatus(),
-                orderItems
+                orderItems,
+                order.getPhone(),
+                order.getAddress()
         );
     }
 }

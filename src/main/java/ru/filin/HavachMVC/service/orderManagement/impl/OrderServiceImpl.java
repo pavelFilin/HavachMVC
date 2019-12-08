@@ -57,6 +57,7 @@ public class OrderServiceImpl {
                 new Date(),
                 PaymentType.valueOf(paymentType),
                 count,
+                phone,
                 address,
                 finalPrice,
                 OrderStatus.PROCESSING,
@@ -71,16 +72,10 @@ public class OrderServiceImpl {
 
 
     public OrderDTO getOrderByUserIdAndOrderId(long userId, long orderId) {
-        Order order = orderRepository.getByIdAndUserID(orderId, userId);
-        List<OrderItemFull> orderItems = orderRepository.getOrderItemsOrderIdAndUserId(orderId, userId);
+        Order order = orderRepository.findOrderByIdAndUserID(orderId, userId);
+        List<OrderItemFull> orderItems = orderRepository.findOrderItemsByOrderId(userId);
         List<OrderItemDTO> orderItemDTOS = orderItems.stream()
-                .map(oi -> new OrderItemDTO(
-                        oi.getId(),
-                        productService.getById(oi.getProductId()),
-                        oi.getOrderId(),
-                        oi.getPrice(),
-                        oi.getQuantity(),
-                        oi.getTotalPrice()))
+                .map(oi -> new OrderItemDTO(oi, productService.getById(oi.getProductId())))
                 .collect(Collectors.toList());
         return new OrderDTO(order, orderItemDTOS);
     }

@@ -32,11 +32,10 @@ public class OrderController {
                             @RequestParam String address,
                             @RequestParam String paymentType) {
         long orderId = 0;
-        if (StringUtils.isEmpty(phone) || StringUtils.isEmpty(address) || StringUtils.isEmpty(paymentType)) {
+        if (!(StringUtils.isEmpty(phone) || StringUtils.isEmpty(address) || StringUtils.isEmpty(paymentType))) {
             orderId = orderService.makeOrder(user.getId(), phone, address, paymentType);
         }
 
         return "redirect:/order/" + orderId;
-
     }
 }
