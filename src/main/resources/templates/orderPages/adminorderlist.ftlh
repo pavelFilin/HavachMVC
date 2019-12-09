@@ -28,7 +28,7 @@
                         <td>${order.address}</td>
                         <td>${order.paymentStatus}</td>
                         <td>${order.paymentType}</td>
-                        <td><select name="orderStatus" class="form-control"
+                        <td style="min-width: 140px"><select name="orderStatus" class="form-control"
                                     onchange="changeOrderStatus(this, ${order.getId()})">
                                 <#list orderStatus as status>
                                     <option <#if status==order.getOrderStatus()> selected</#if>>${status}</option>

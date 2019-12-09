@@ -67,7 +67,7 @@ public class OrderServiceImpl {
         );
 
         validateQuantity(cartMap, message);
-        if (message.getString().length()>0) {
+        if (message.getString().length() > 0) {
             return -1;
         }
 
@@ -81,7 +81,7 @@ public class OrderServiceImpl {
             int quantity = entry.getKey().getQuantity();
             int stock = entry.getValue().getStock();
             if (stock < quantity) {
-                massage.setString(massage.getString() + entry.getValue().getName() + "is not available (" + entry.getValue().getStock() + ") <br>");
+                massage.setString(massage.getString() + entry.getValue().getName() + " is not available (" + entry.getValue().getStock() + ")");
             }
         }
     }
@@ -100,9 +100,17 @@ public class OrderServiceImpl {
         return new OrderDTO(order, orderItemDTOS);
     }
 
-    public List<Order> getOrderByUser() {
+    public List<Order> getOrderByUser(long id) {
+        List<Order> orders = orderRepository.getAll();
+        return orders.stream()
+                .filter(order -> order.getUserId() == id)
+                .collect(Collectors.toList());
+    }
+
+    public List<Order> getOrders() {
         return orderRepository.getAll();
     }
+
 
     public void changeOrderStatus(long id, String orderStatus) {
         orderRepository.changeOrderStatus(id, OrderStatus.valueOf(orderStatus));

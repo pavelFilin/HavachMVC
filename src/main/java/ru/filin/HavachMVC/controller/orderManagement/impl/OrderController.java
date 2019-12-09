@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.filin.HavachMVC.constants.OrderStatus;
 import ru.filin.HavachMVC.controller.DTO.Message;
 import ru.filin.HavachMVC.controller.DTO.OrderDTO;
@@ -29,7 +30,7 @@ public class OrderController {
 
     @GetMapping
     public String getOrders(@AuthenticationPrincipal User user, Model model) {
-        List<Order> orders = orderService.getOrderByUser();
+        List<Order> orders = orderService.getOrderByUser(user.getId());
         orders.sort(Comparator.comparing(Order::getTimeCreated).reversed());
         model.addAttribute("orders", orders);
         return "orderPages/userorderlist";
@@ -37,7 +38,7 @@ public class OrderController {
 
     @GetMapping("list")
     public String getOrdersForAdmin(@AuthenticationPrincipal User user, Model model) {
-        List<Order> orders = orderService.getOrderByUser();
+        List<Order> orders = orderService.getOrders();
         orders.sort(Comparator.comparing(Order::getTimeCreated).reversed());
         model.addAttribute("orders", orders);
         model.addAttribute("orderStatus", Arrays.asList(OrderStatus.values()));
@@ -58,16 +59,19 @@ public class OrderController {
     public String makeOrder(@AuthenticationPrincipal User user,
                             @RequestParam String phone,
                             @RequestParam String address,
-                            @RequestParam String paymentType, Model model) {
+                            @RequestParam String paymentType, Model model, final RedirectAttributes redirectAttributes) {
         long orderId = 0;
         Message message = new Message();
         if (!(StringUtils.isEmpty(phone) || StringUtils.isEmpty(address) || StringUtils.isEmpty(paymentType))) {
             orderId = orderService.makeOrder(user.getId(), phone, address, paymentType, message);
+        } else {
+            redirectAttributes.addFlashAttribute("message", "Bad creditails");
+            return "redirect:/cart";
         }
 
         if (message.getString().length() > 0) {
-            model.addAttribute("message", message);
-            return "orderPages/userorder";
+            redirectAttributes.addFlashAttribute("message", message.getString());
+            return "redirect:/cart";
         }
 
         return "redirect:/order/" + orderId;

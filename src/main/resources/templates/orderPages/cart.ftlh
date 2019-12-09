@@ -3,6 +3,9 @@
 <@c.page>
     <div class="container">
         <div class="row">
+            <#if message??><div class="alert alert-danger" role="alert">
+                ${message}
+            </div></#if>
             <table class="table table-bordered table-hover">
                 <thead class="thead-dark">
                 <th></th>
