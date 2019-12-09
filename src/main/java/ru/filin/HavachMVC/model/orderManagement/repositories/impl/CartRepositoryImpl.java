@@ -24,6 +24,7 @@ public class CartRepositoryImpl {
                 getCartQuery,
                 new Object[]{userId},
                 (rs, rowNum) -> new CartItem(
+                        rs.getLong("id"),
                         rs.getLong("user_id"),
                         rs.getLong("product_id"),
                         rs.getInt("quantity")
@@ -70,5 +71,10 @@ public class CartRepositoryImpl {
     public void changeQuantity(long userId, long productId, int quantity) {
         String changeQuantity = "UPDATE cart_item SET quantity = ? WHERE user_id = ? AND  product_id = ?";
         jdbcTemplate.update(changeQuantity, quantity, userId, productId);
+    }
+
+    public void deleteCartItem(long cartId) {
+        String deleteCartItem = "DELETE from cart_item WHERE id = ?";
+        jdbcTemplate.update(deleteCartItem, cartId);
     }
 }

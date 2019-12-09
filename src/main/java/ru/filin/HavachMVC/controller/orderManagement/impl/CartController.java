@@ -61,6 +61,13 @@ public class CartController {
         return "redirect:/cart";
     }
 
+    @PostMapping("/delete")
+    @ResponseBody
+    public String removeItem(@RequestParam long cartId) {
+        cartService.deleteCartItem(cartId);
+        return new Gson().toJson("success");
+    }
+
     @PostMapping(value = "change/orderstatus")
     @ResponseBody
     public String changeQuantity(@AuthenticationPrincipal User user, @RequestParam("productId") long productId, @RequestParam("quantity") int quantity) {

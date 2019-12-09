@@ -40,7 +40,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public void update(Product obj) {
-        String query = "UPDATE products SET (name, price, description, details_id, stock, active,  photo) VALUES (?, ?, ?, ?, ?, ?, ?) WHERE id = ?";
+        String query = "UPDATE products SET name = ?, price = ?, description = ?, details_id = ?, stock = ?, active = ?,  photo = ?, category_id = ? WHERE id = ?";
         jdbcTemplate.update(
                 query,
                 obj.getName(),
@@ -50,8 +50,8 @@ public class ProductRepositoryImpl implements ProductRepository {
                 obj.getStock(),
                 obj.isActive(),
                 obj.getPhoto(),
-                obj.getId(),
-                obj.getCategoryId()
+                obj.getCategoryId(),
+                obj.getId()
         );
     }
 

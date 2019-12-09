@@ -18,6 +18,7 @@ public class CartConvector {
 
     public static CartDTO toCartDTO(CartItem cart) {
         CartDTO cartDTO = new CartDTO();
+        cart.setId(cart.getId());
         cartDTO.setProduct(productService.getById(cart.getProductId()));
         cartDTO.setQuantity(cart.getQuantity());
         return cartDTO;

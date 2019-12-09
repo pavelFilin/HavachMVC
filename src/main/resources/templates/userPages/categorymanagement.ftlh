@@ -14,7 +14,7 @@
                 </#if>
                 <div class="row">
                     <div class="col-md-8">
-                        <table class="table table-bordered table-hover category-display">
+                        <table class="table table-bordered table-hover category-display ">
                             <thead class="thead-dark">
                             <th>ID</th>
                             <th>Title</th>

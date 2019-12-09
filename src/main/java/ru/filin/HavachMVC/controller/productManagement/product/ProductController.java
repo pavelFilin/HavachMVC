@@ -1,19 +1,20 @@
 package ru.filin.HavachMVC.controller.productManagement.product;
 
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.filin.HavachMVC.controller.DTO.ProductDTO;
 import ru.filin.HavachMVC.model.productManagement.entities.Category;
 import ru.filin.HavachMVC.model.productManagement.entities.Product;
+import ru.filin.HavachMVC.model.userManagement.entities.User;
 import ru.filin.HavachMVC.service.productManagement.category.CategoryService;
 import ru.filin.HavachMVC.service.productManagement.product.ProductService;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,12 +55,32 @@ public class ProductController {
             products = productService.getByNameAndActive(filter, active);
         }
         List<ProductDTO> productDTOS = products.stream().map(product -> fillCategory(product, categories)).collect(Collectors.toList());
+        productDTOS.sort(Comparator.comparing(ProductDTO::getName));
         model.addAttribute("products", productDTOS);
-
         model.addAttribute("filter", filter);
         model.addAttribute("active", active);
         return "productPages/adminproductlist";
     }
+
+
+    @PostMapping(value = "change/stock")
+    @ResponseBody
+    public String changeStock(@AuthenticationPrincipal User user, @RequestParam long productId, @RequestParam int stock) {
+        Product product = productService.getById(productId);
+        product.setStock(stock);
+        productService.update(product);
+        return new Gson().toJson("success");
+    }
+
+    @PostMapping(value = "change/active")
+    @ResponseBody
+    public String changeActive(@AuthenticationPrincipal User user, @RequestParam long productId, @RequestParam boolean active) {
+        Product product = productService.getById(productId);
+        product.setActive(active);
+        productService.update(product);
+        return new Gson().toJson("success");
+    }
+
 
     private ProductDTO fillCategory(Product product, List<Category> categories) {
         ProductDTO productDTO = new ProductDTO(product);

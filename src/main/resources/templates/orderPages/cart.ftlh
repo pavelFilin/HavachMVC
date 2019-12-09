@@ -6,7 +6,7 @@
             <#if message??><div class="alert alert-danger" role="alert">
                 ${message}
             </div></#if>
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered table-hover admin-product-table">
                 <thead class="thead-dark">
                 <th></th>
                 <th>Name</th>
@@ -21,11 +21,13 @@
                         <td>${cartItem.product.name}</td>
                         <td><input type="number" class="form-control" value="${cartItem.quantity}" min="1" maxlength="100" onchange="changeCartQuantity(this, ${cartItem.product.id})"></td>
                         <td>${cartItem.product.price * cartItem.quantity}</td>
+                        <td><button onclick="deleteCartItem(${cartItem.id})" class="btn btn-outline-danger" type="submit"><i
+                                        class="fas fa-trash-alt" ></i></button></td>
                     </tr>
                 </#list>
                 <tr class="bg-info text-light">
                     <td></td>
-                    <td></td>
+                    <td>Total</td>
                     <td>${totalQuantity}</td>
                     <td>${totalPrice}</td>
                 </tr>

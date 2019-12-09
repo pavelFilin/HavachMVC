@@ -41,4 +41,8 @@ public class CartServiceImpl {
     public void changeQuantity(long userId, long productId, int quantity) {
         cartRepository.changeQuantity(userId, productId, quantity);
     }
+
+    public void deleteCartItem(long cartId) {
+        cartRepository.deleteCartItem(cartId);
+    }
 }

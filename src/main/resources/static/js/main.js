@@ -16,6 +16,37 @@ $("#product-photo-reset").click(function () {
 });
 
 
+function changeCartQuantity(input, productId) {
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+
+    if (input.value < 1) {
+        input.value = 1;
+    }
+
+
+    $.ajax({
+        method: "POST",
+        url: "/cart/change/orderstatus",
+        data: {productId: productId, quantity: input.value},
+        dataType: 'json',
+        success: function (data) {
+            if (data != "success") {
+                alert(data)
+            } else {
+                location.reload();
+            }
+        },
+        error: function () {
+            alert('error!');
+        }
+    });
+}
+
+
 function changeOrderStatus(input, orderId) {
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
@@ -40,22 +71,75 @@ function changeOrderStatus(input, orderId) {
     });
 }
 
-function changeCartQuantity(input, productId) {
+function changeProductStock(input, productId) {
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
     $(document).ajaxSend(function (e, xhr, options) {
         xhr.setRequestHeader(header, token);
     });
 
-    if (input.value < 1) {
-        input.value = 1;
+    if (input.value < 0) {
+        input.value = 0;
     }
 
 
     $.ajax({
         method: "POST",
-        url: "/cart/change/orderstatus",
-        data: {productId: productId, quantity: input.value},
+        url: "/product/change/stock",
+        data: {productId: productId, stock: input.value},
+        dataType: 'json',
+        success: function (data) {
+            if (data != "success") {
+                alert(data)
+            } else {
+                location.reload();
+            }
+        },
+        error: function () {
+            alert('error!');
+        }
+    });
+}
+
+function changeProductActive(input, productId) {
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+
+
+    $.ajax({
+        method: "POST",
+        url: "/product/change/active",
+        data: {productId: productId, active: input.value},
+        dataType: 'json',
+        success: function (data) {
+            if (data != "success") {
+                alert(data)
+            } else {
+                location.reload();
+            }
+        },
+        error: function () {
+            alert('error!');
+        }
+    });
+}
+
+
+function deleteCartItem(cartId) {
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+
+
+    $.ajax({
+        method: "POST",
+        url: "/cart/delete",
+        data: {cartId: cartId},
         dataType: 'json',
         success: function (data) {
             if (data != "success") {
