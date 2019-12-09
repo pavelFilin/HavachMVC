@@ -17,7 +17,6 @@ $("#product-photo-reset").click(function () {
 
 
 function changeOrderStatus(input, orderId) {
-
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
     $(document).ajaxSend(function (e, xhr, options) {
@@ -31,7 +30,7 @@ function changeOrderStatus(input, orderId) {
         // data: JSON.stringify({
         //     id: orderId, orderStatus: input.value
         // }),
-        {id: orderId, orderStatus: input.value},
+            {id: orderId, orderStatus: input.value},
         dataType: 'json',
         success: function (data) {
 
@@ -41,4 +40,33 @@ function changeOrderStatus(input, orderId) {
     });
 }
 
+function changeCartQuantity(input, productId) {
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+
+    if (input.value < 1) {
+        input.value = 1;
+    }
+
+
+    $.ajax({
+        method: "POST",
+        url: "/cart/change/orderstatus",
+        data: {productId: productId, quantity: input.value},
+        dataType: 'json',
+        success: function (data) {
+            if (data != "success") {
+                alert(data)
+            } else {
+                location.reload();
+            }
+        },
+        error: function () {
+            alert('error!');
+        }
+    });
+}
 

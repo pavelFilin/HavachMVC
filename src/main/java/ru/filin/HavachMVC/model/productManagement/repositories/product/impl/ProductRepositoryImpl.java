@@ -95,14 +95,20 @@ public class ProductRepositoryImpl implements ProductRepository {
 
         if (StringUtils.isEmpty(active) || "none".equals(active)) {
             String findProductByCategoryId = "SELECT * FROM products WHERE name like ?";
-            return jdbcTemplate.query(findProductByCategoryId, new Object[]{"%" + name+ "%"}, ROW_MAPPER);
+            return jdbcTemplate.query(findProductByCategoryId, new Object[]{"%" + name + "%"}, ROW_MAPPER);
         } else {
             boolean a = false;
             if ("active".equals(active)) {
                 a = true;
             }
             String findProductByCategoryId = "SELECT * FROM products WHERE name like ? and active = ?";
-            return jdbcTemplate.query(findProductByCategoryId, new Object[]{"%" + name+ "%", a}, ROW_MAPPER);
+            return jdbcTemplate.query(findProductByCategoryId, new Object[]{"%" + name + "%", a}, ROW_MAPPER);
         }
+    }
+
+    @Override
+    public void updateStock(long id, int stock) {
+        String query = "UPDATE products SET stock = ? WHERE id = ?";
+        jdbcTemplate.update(query, stock, id);
     }
 }

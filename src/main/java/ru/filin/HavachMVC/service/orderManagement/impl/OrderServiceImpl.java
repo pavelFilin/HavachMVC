@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.filin.HavachMVC.constants.OrderStatus;
 import ru.filin.HavachMVC.constants.PaymentStatus;
 import ru.filin.HavachMVC.constants.PaymentType;
+import ru.filin.HavachMVC.controller.DTO.Message;
 import ru.filin.HavachMVC.controller.DTO.OrderDTO;
 import ru.filin.HavachMVC.controller.DTO.OrderItemDTO;
 import ru.filin.HavachMVC.model.orderManagement.entities.CartItem;
@@ -37,7 +38,8 @@ public class OrderServiceImpl {
     public long makeOrder(long userId,
                           String phone,
                           String address,
-                          String paymentType
+                          String paymentType,
+                          Message message
     ) {
         List<CartItem> cartItems = cartService.findCartsByUser(userId);
         Map<CartItem, Product> cartMap = new HashMap<>();
@@ -63,9 +65,25 @@ public class OrderServiceImpl {
                 OrderStatus.PROCESSING,
                 PaymentStatus.PENDING
         );
+
+        validateQuantity(cartMap, message);
+        if (message.getString().length()>0) {
+            return -1;
+        }
+
         long orderId = saveOrderAndOrderItems(order, cartMap);
         cartService.purgeCartByUser(userId);
         return orderId;
+    }
+
+    private void validateQuantity(Map<CartItem, Product> cartMap, Message massage) {
+        for (Map.Entry<CartItem, Product> entry : cartMap.entrySet()) {
+            int quantity = entry.getKey().getQuantity();
+            int stock = entry.getValue().getStock();
+            if (stock < quantity) {
+                massage.setString(massage.getString() + entry.getValue().getName() + "is not available (" + entry.getValue().getStock() + ") <br>");
+            }
+        }
     }
 
     private long saveOrderAndOrderItems(Order order, Map<CartItem, Product> cartMap) {

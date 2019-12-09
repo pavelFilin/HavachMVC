@@ -10,17 +10,22 @@ import ru.filin.HavachMVC.model.orderManagement.entities.Order;
 import ru.filin.HavachMVC.model.orderManagement.entities.OrderItemFull;
 import ru.filin.HavachMVC.model.orderManagement.repositories.OrderRepository;
 import ru.filin.HavachMVC.model.productManagement.entities.Product;
+import ru.filin.HavachMVC.model.productManagement.repositories.product.ProductRepository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Repository
 public class OrderRepositoryImpl implements OrderRepository {
 
+    private ProductRepository productRepository;
+
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public OrderRepositoryImpl(JdbcTemplate jdbcTemplate) {
+    public OrderRepositoryImpl(ProductRepository productRepository, JdbcTemplate jdbcTemplate) {
+        this.productRepository = productRepository;
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -88,6 +93,12 @@ public class OrderRepositoryImpl implements OrderRepository {
     public long saveOrderAndOrderItems(Order order, Map<CartItem, Product> cartMap) {
         Long orderId = save(order);
         saveCarts(cartMap, orderId);
+        Map<Long, Integer> newQuantity = new HashMap<>();
+        for (Map.Entry<CartItem, Product> entry : cartMap.entrySet()) {
+            int quantity = entry.getKey().getQuantity();
+            int stock = entry.getValue().getStock();
+            productRepository.updateStock(entry.getValue().getId(), (stock-quantity));
+        }
         return orderId;
     }
 

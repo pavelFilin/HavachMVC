@@ -16,7 +16,7 @@
                         <td><img class="card-img-top" style="width: 150px"
                                  src="/img/${cartItem.product.photo!}"/></td>
                         <td>${cartItem.product.name}</td>
-                        <td>${cartItem.quantity}</td>
+                        <td><input type="number" class="form-control" value="${cartItem.quantity}" min="1" maxlength="100" onchange="changeCartQuantity(this, ${cartItem.product.id})"></td>
                         <td>${cartItem.product.price * cartItem.quantity}</td>
                     </tr>
                 </#list>

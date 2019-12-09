@@ -25,6 +25,7 @@
                         <td>${order.paymentStatus}</td>
                         <td>${order.paymentType}</td>
                         <td>${order.orderStatus}</td>
+                        <td></td>
                     </tr>
                 </#list>
                 </tbody>

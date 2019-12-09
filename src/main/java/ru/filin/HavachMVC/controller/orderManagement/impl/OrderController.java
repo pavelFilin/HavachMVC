@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.filin.HavachMVC.constants.OrderStatus;
+import ru.filin.HavachMVC.controller.DTO.Message;
 import ru.filin.HavachMVC.controller.DTO.OrderDTO;
 import ru.filin.HavachMVC.model.orderManagement.entities.Order;
 import ru.filin.HavachMVC.model.userManagement.entities.User;
@@ -57,10 +58,16 @@ public class OrderController {
     public String makeOrder(@AuthenticationPrincipal User user,
                             @RequestParam String phone,
                             @RequestParam String address,
-                            @RequestParam String paymentType) {
+                            @RequestParam String paymentType, Model model) {
         long orderId = 0;
+        Message message = new Message();
         if (!(StringUtils.isEmpty(phone) || StringUtils.isEmpty(address) || StringUtils.isEmpty(paymentType))) {
-            orderId = orderService.makeOrder(user.getId(), phone, address, paymentType);
+            orderId = orderService.makeOrder(user.getId(), phone, address, paymentType, message);
+        }
+
+        if (message.getString().length() > 0) {
+            model.addAttribute("message", message);
+            return "orderPages/userorder";
         }
 
         return "redirect:/order/" + orderId;

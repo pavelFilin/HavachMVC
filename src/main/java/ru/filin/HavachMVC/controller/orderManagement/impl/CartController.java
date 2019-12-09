@@ -1,19 +1,19 @@
 package ru.filin.HavachMVC.controller.orderManagement.impl;
 
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.filin.HavachMVC.controller.DTO.CartConvector;
 import ru.filin.HavachMVC.controller.DTO.CartDTO;
 import ru.filin.HavachMVC.model.orderManagement.entities.CartItem;
+import ru.filin.HavachMVC.model.productManagement.entities.Product;
 import ru.filin.HavachMVC.model.userManagement.entities.User;
 import ru.filin.HavachMVC.model.userManagement.entities.UserContacts;
 import ru.filin.HavachMVC.service.orderManagement.impl.CartServiceImpl;
+import ru.filin.HavachMVC.service.productManagement.product.ProductService;
 import ru.filin.HavachMVC.service.userManagement.UserContactsService;
 
 import java.util.List;
@@ -24,12 +24,16 @@ import java.util.stream.Collectors;
 public class CartController {
 
     private CartServiceImpl cartService;
+
     private UserContactsService userContactsService;
 
+    private ProductService productService;
+
     @Autowired
-    public CartController(CartServiceImpl cartService, UserContactsService userContactsService) {
+    public CartController(CartServiceImpl cartService, UserContactsService userContactsService, ProductService productService) {
         this.cartService = cartService;
         this.userContactsService = userContactsService;
+        this.productService = productService;
     }
 
     @GetMapping
@@ -39,7 +43,9 @@ public class CartController {
         UserContacts userContacts = userContactsService.getByUserId(user.getId());
 
         int totalQuantity = cartDTOS.stream().mapToInt(CartDTO::getQuantity).sum();
-        int totalPrice = cartDTOS.stream().mapToInt(c -> c.getProduct().getPrice()).sum();
+        int totalPrice = cartDTOS.stream()
+                .mapToInt(c -> c.getProduct().getPrice() * c.getQuantity())
+                .sum();
 
         model.addAttribute("cart", cartDTOS);
         model.addAttribute("userContacts", userContacts);
@@ -53,6 +59,18 @@ public class CartController {
     public String addNewItem(@AuthenticationPrincipal User user, @RequestParam long productId, @RequestParam int quantity) {
         cartService.saveCartItem(user.getId(), productId, quantity);
         return "redirect:/cart";
+    }
+
+    @PostMapping(value = "change/orderstatus")
+    @ResponseBody
+    public String changeQuantity(@AuthenticationPrincipal User user, @RequestParam("productId") long productId, @RequestParam("quantity") int quantity) {
+        Product product = productService.getById(productId);
+        if (product.getStock() < quantity) {
+            return new Gson().toJson(product.getName() +" is not available!");
+        }
+
+        cartService.changeQuantity(user.getId(), productId, quantity);
+        return new Gson().toJson("success");
     }
 
 }

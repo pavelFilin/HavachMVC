@@ -37,4 +37,8 @@ public class CartServiceImpl {
     public void purgeCartByUser(long userId) {
         cartRepository.purgeCartByUser(userId);
     }
+
+    public void changeQuantity(long userId, long productId, int quantity) {
+        cartRepository.changeQuantity(userId, productId, quantity);
+    }
 }

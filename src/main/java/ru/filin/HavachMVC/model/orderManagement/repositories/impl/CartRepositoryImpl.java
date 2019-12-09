@@ -66,4 +66,9 @@ public class CartRepositoryImpl {
         String purge = "DELETE from cart_item WHERE user_id = ?";
         jdbcTemplate.update(purge, userId);
     }
+
+    public void changeQuantity(long userId, long productId, int quantity) {
+        String changeQuantity = "UPDATE cart_item SET quantity = ? WHERE user_id = ? AND  product_id = ?";
+        jdbcTemplate.update(changeQuantity, quantity, userId, productId);
+    }
 }
