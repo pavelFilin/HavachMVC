@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,13 +13,11 @@ import ru.filin.HavachMVC.model.userManagement.entities.Role;
 import ru.filin.HavachMVC.model.userManagement.entities.User;
 import ru.filin.HavachMVC.model.userManagement.entities.UserContacts;
 import ru.filin.HavachMVC.model.userManagement.repositories.UserRepository;
+import ru.filin.HavachMVC.service.mail.MailSender;
 import ru.filin.HavachMVC.service.userManagement.UserContactsService;
 import ru.filin.HavachMVC.service.userManagement.UserService;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,10 +27,17 @@ public class UserServiceImpl implements UserService {
 
     private UserContactsService userContactsService;
 
+    private PasswordEncoder passwordEncoder;
+
+    private MailSender mailSender;
+
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserContactsService userContactsService) {
+    public UserServiceImpl(UserRepository userRepository, UserContactsService userContactsService, PasswordEncoder passwordEncoder, MailSender mailSender) {
         this.userRepository = userRepository;
         this.userContactsService = userContactsService;
+        this.passwordEncoder = passwordEncoder;
+        this.mailSender = mailSender;
     }
 
     @Override
@@ -116,5 +122,39 @@ public class UserServiceImpl implements UserService {
         }
 
         update(userFromDb);
+    }
+
+    @Override
+    public void addUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        user.getRoles().add(new Role(RoleConstant.USER.getCode(), RoleConstant.USER.name()));
+        user.setActive(false);
+
+        user.setCode(UUID.randomUUID().toString());
+
+        String message = String.format(
+                "Hello, %s! \n" +
+                        "Click to activate your account:  http://localhost:8080/activate/%s",
+                user.getFirstName(),
+                user.getCode()
+        );
+
+        mailSender.send(user.getEmail(), "Activation code", message);
+
+        save(user);
+    }
+
+    @Override
+    public boolean activateUser(String code) {
+        User user = userRepository.getByCode(code);
+        if (user == null) {
+            return false;
+        }
+
+        user.setCode(null);
+        user.setActive(true);
+        userRepository.update(user);
+        return true;
     }
 }

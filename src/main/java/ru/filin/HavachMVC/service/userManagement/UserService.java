@@ -14,4 +14,8 @@ public interface UserService extends BaseService<User>, UserDetailsService {
     void updateRoles(long userId, Map<String, String> form);
 
     void updateUserInfo(User user, @AuthenticationPrincipal User userFromDb, @RequestParam(required = false) String phone, @RequestParam(required = false) String address);
+
+    void addUser(User user);
+
+    boolean activateUser(String code);
 }

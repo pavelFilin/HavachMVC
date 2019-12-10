@@ -45,6 +45,7 @@ public class UserRepositoryImpl implements UserRepository {
                     user.setFirstName(rs.getString("first_name"));
                     user.setLastName(rs.getString("last_name"));
                     user.setActive(rs.getBoolean("active"));
+                    user.setCode(rs.getString("code"));
                     users.put(user.getId(), user);
                 }
 
@@ -76,6 +77,7 @@ public class UserRepositoryImpl implements UserRepository {
                     user.setLastName(rs.getString("last_name"));
                     user.setPassword(rs.getString("password"));
                     user.setActive(rs.getBoolean("active"));
+                    user.setCode(rs.getString("code"));
                 }
             }
             while (rs.next());
@@ -97,7 +99,8 @@ public class UserRepositoryImpl implements UserRepository {
                 "first_name = ?, " +
                 "last_name = ?, " +
                 "password = ?, " +
-                "active = ?" +
+                "active = ?, " +
+                "code = ?" +
                 "WHERE email = ?";
 
         jdbcTemplate.update(
@@ -106,6 +109,7 @@ public class UserRepositoryImpl implements UserRepository {
                 user.getLastName(),
                 user.getPassword(),
                 user.isActive(),
+                user.getCode(),
                 user.getEmail()
         );
 
@@ -132,8 +136,8 @@ public class UserRepositoryImpl implements UserRepository {
         });
 
         String saveUser = "INSERT INTO " +
-                "   usr (id, first_name, last_name, password, email, active) " +
-                "VALUES (?,?,?,?,?,?); ";
+                "   usr (id, first_name, last_name, password, email, active, code) " +
+                "VALUES (?,?,?,?,?,?,?); ";
 
         jdbcTemplate.update(
                 saveUser,
@@ -142,7 +146,8 @@ public class UserRepositoryImpl implements UserRepository {
                 obj.getLastName(),
                 obj.getPassword(),
                 obj.getEmail(),
-                obj.isActive()
+                obj.isActive(),
+                obj.getCode()
         );
 
         String saveRoles = "INSERT INTO " +
@@ -174,6 +179,7 @@ public class UserRepositoryImpl implements UserRepository {
             u.setFirstName(rs.getString("first_name"));
             u.setLastName(rs.getString("last_name"));
             u.setActive(rs.getBoolean("active"));
+            u.setCode(rs.getString("code"));
             return u;
         });
 
@@ -183,5 +189,28 @@ public class UserRepositoryImpl implements UserRepository {
         });
 
         return user.orElse(null);
+    }
+
+    @Override
+    public User getByCode(String code) {
+        String getUserByEmail = "SELECT * " +
+                "FROM usr u \n" +
+                "INNER JOIN user_roles ur ON u.id=ur.user_id \n" +
+                "INNER JOIN roles r on ur.role_id = r.id where u.code = ?";
+
+        List<User> users = jdbcTemplate.query(getUserByEmail, new Object[]{code}, (rs, rowNum) -> {
+            User u = new User();
+            u.getRoles().add(new Role(rs.getLong("role_id"), rs.getString("name")));
+            u.setId(rs.getLong("id"));
+            u.setEmail(rs.getString("email"));
+            u.setPassword(rs.getString("password"));
+            u.setFirstName(rs.getString("first_name"));
+            u.setLastName(rs.getString("last_name"));
+            u.setActive(rs.getBoolean("active"));
+            u.setCode(rs.getString("code"));
+            return u;
+        });
+
+        return users.stream().findAny().orElse(null);
     }
 }

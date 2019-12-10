@@ -22,6 +22,8 @@ public class User implements UserDetails {
 
     private boolean active;
 
+    private String code;
+
     List<Role> roles = new ArrayList<>();
 
     public boolean isAdmin() {
