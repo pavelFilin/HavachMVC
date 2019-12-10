@@ -72,4 +72,15 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getByNameAndActive(String name, String active) {
         return productRepository.getByNameAndActive(name, active);
     }
+
+    @Override
+    public void edit(Product product, MultipartFile file, String category) throws IOException {
+        if (!file.isEmpty()) {
+            String path = FileHelper.loadFile(file, uploadPath);
+            product.setPhoto(path);
+        }
+        Category categoryFromDB = categoryRepository.getByTitle(category);
+        product.setCategoryId(categoryFromDB.getId());
+        productRepository.update(product);
+    }
 }

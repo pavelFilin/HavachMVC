@@ -14,4 +14,6 @@ public interface ProductService extends BaseRepository<Product> {
     long add(Product product, MultipartFile file, String category) throws IOException;
 
     List<Product> getByNameAndActive(String name, String active);
+
+    void edit(Product product, MultipartFile file, String category) throws IOException;
 }

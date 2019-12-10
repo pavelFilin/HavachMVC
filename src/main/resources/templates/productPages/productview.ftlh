@@ -31,7 +31,7 @@
 
             <#if isAdmin>
             <div class="ml-1 mb-3 row col-12">
-                <a class="btn btn-danger text-light btn-lg btn-block mt-3">Edit product</a>
+                <a href="/product/management/edit/${product.id}" class="btn btn-danger text-light btn-lg btn-block mt-3">Edit product</a>
             </div>
             </#if>
         </div>
