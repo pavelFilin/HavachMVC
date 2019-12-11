@@ -1,5 +1,7 @@
 package ru.filin.HavachMVC.service.userManagement.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +20,7 @@ import ru.filin.HavachMVC.service.userManagement.UserContactsService;
 import ru.filin.HavachMVC.service.userManagement.UserService;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +34,8 @@ public class UserServiceImpl implements UserService {
 
     private MailSender mailSender;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserContactsServiceImpl.class);
+
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, UserContactsService userContactsService, PasswordEncoder passwordEncoder, MailSender mailSender) {
@@ -42,38 +47,52 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAll() {
-        return userRepository.getAll();
+        List<User> users = userRepository.getAll();
+        logger.info("get user " + users.stream().collect(Collectors.toMap(User::getId, Function.identity())));
+        return users;
     }
 
     @Override
     public User getById(long id) {
+        logger.info("get user by id=" + id);
         return userRepository.getById(id);
     }
 
     @Override
     public void delete(long id) {
+        logger.info("delete user by id=" + id);
+        ;
         userRepository.delete(id);
     }
 
     @Override
     public void update(User obj) {
+        logger.info("update user id=" + obj.getId());
         userRepository.update(obj);
     }
 
     @Override
     public Long save(User obj) {
+        logger.info("save user email=" + obj.getEmail());
         return userRepository.save(obj);
     }
 
     @Override
     public User getByEmail(String email) {
+        logger.info("get user by email = " + email);
         return userRepository.getByEmail(email);
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User byEmail = getByEmail(email);
-        return byEmail;
+        if (byEmail == null) {
+            logger.info("error of authentication email=" + email);
+            return byEmail;
+        } else {
+            logger.info("user with email=" + email + " is authenticated");
+            return byEmail;
+        }
     }
 
     @Override
@@ -91,7 +110,7 @@ public class UserServiceImpl implements UserService {
                 user.getRoles().add(new Role(RoleConstant.valueOf(key).getCode(), key));
             }
         }
-
+        logger.info("update user role to" + form);
         userRepository.update(user);
     }
 
@@ -126,6 +145,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUser(User user) {
+        logger.info("add user [email=" + user.getEmail() +']');
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         user.getRoles().add(new Role(RoleConstant.USER.getCode(), RoleConstant.USER.name()));
@@ -148,13 +168,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean activateUser(String code) {
         User user = userRepository.getByCode(code);
+        logger.info("attempt activate user by code=" + code);
+
         if (user == null) {
+            logger.info("bad activate code=" + code);
             return false;
         }
 
         user.setCode(null);
         user.setActive(true);
         userRepository.update(user);
+        logger.info("activate user userId=" + user.getId());
         return true;
     }
 }

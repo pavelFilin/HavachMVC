@@ -1,5 +1,7 @@
 package ru.filin.HavachMVC.service.mail;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -15,6 +17,8 @@ public class MailSender {
     @Autowired
     private JavaMailSender mailSender;
 
+    private static final Logger logger = LoggerFactory.getLogger(MailSender.class);
+
     public void send(String emailTo, String subject, String massage) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
@@ -23,6 +27,7 @@ public class MailSender {
         simpleMailMessage.setSubject(subject);
         simpleMailMessage.setText(massage);
 
+        logger.info("send mail to" + emailTo + "\nsubject: " + subject +"\ntext: " + massage);
         mailSender.send(simpleMailMessage);
     }
 }

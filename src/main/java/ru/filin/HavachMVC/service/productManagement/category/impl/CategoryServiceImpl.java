@@ -1,5 +1,7 @@
 package ru.filin.HavachMVC.service.productManagement.category.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -8,10 +10,14 @@ import ru.filin.HavachMVC.model.productManagement.repositories.category.Category
 import ru.filin.HavachMVC.service.productManagement.category.CategoryService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
+
     private CategoryRepository categoryRepository;
+
+    private static final Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
     @Autowired
     public CategoryServiceImpl(CategoryRepository categoryRepository) {
@@ -20,31 +26,40 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category findByTitle(String title) {
-        return categoryRepository.getByTitle(title);
+        Category category = categoryRepository.getByTitle(title);
+        logger.info("get category by title=" + title);
+        return category;
     }
 
     @Override
     public List<Category> getAll() {
-        return categoryRepository.getAll();
+        List<Category> categories = categoryRepository.getAll();
+        logger.info("get all categories" + categories.stream().map(Category::getTitle).collect(Collectors.toList()).toString());
+        return categories;
     }
 
     @Override
     public Category getById(long id) {
-        return categoryRepository.getById(id);
+        Category category = categoryRepository.getById(id);
+        logger.info("get category by id=" + id);
+        return category;
     }
 
     @Override
     public void delete(long id) {
+        logger.info("delete category by id=" + id);
         categoryRepository.delete(id);
     }
 
     @Override
     public void update(Category obj) {
+        logger.info("update category by id="+ obj.getId() + "title " + obj.getTitle());
         categoryRepository.update(obj);
     }
 
     @Override
     public Long save(Category obj) {
+        logger.info("save category title=" + obj.getTitle());
         return categoryRepository.save(obj);
     }
 

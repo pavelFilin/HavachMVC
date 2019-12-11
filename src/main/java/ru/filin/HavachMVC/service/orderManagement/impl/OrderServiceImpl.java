@@ -1,5 +1,7 @@
 package ru.filin.HavachMVC.service.orderManagement.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.filin.HavachMVC.constants.OrderStatus;
 import ru.filin.HavachMVC.constants.PaymentStatus;
@@ -28,6 +30,8 @@ public class OrderServiceImpl {
     private OrderRepository orderRepository;
 
     private ProductService productService;
+
+    private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     public OrderServiceImpl(CartServiceImpl cartService, OrderRepository orderRepository, ProductService productService) {
         this.cartService = cartService;
@@ -66,12 +70,14 @@ public class OrderServiceImpl {
                 PaymentStatus.PENDING
         );
 
+
         validateQuantity(cartMap, message);
         if (message.getString().length() > 0) {
             return -1;
         }
 
         long orderId = saveOrderAndOrderItems(order, cartMap);
+        logger.info("new order has bean created orderId=" + orderId);
         cartService.purgeCartByUser(userId);
         return orderId;
     }
@@ -81,6 +87,8 @@ public class OrderServiceImpl {
             int quantity = entry.getKey().getQuantity();
             int stock = entry.getValue().getStock();
             if (stock < quantity) {
+                logger.info("not enough items in stock product=" + entry.getValue().getId() + " product name: " + entry.getValue().getName() + "quantity" + entry.getKey().getQuantity() +
+                        " stock=" + entry.getValue().getStock());
                 massage.setString(massage.getString() + entry.getValue().getName() + " is not available (" + entry.getValue().getStock() + ")");
             }
         }
@@ -97,22 +105,27 @@ public class OrderServiceImpl {
         List<OrderItemDTO> orderItemDTOS = orderItems.stream()
                 .map(oi -> new OrderItemDTO(oi, productService.getById(oi.getProductId())))
                 .collect(Collectors.toList());
+        logger.info("get order by userId=" + userId + "and orderId=" + orderId);
         return new OrderDTO(order, orderItemDTOS);
     }
 
     public List<Order> getOrderByUser(long id) {
         List<Order> orders = orderRepository.getAll();
+        logger.info("get orders by user" + orders.stream().map(Order::getId).collect(Collectors.toList()).toString());
         return orders.stream()
                 .filter(order -> order.getUserId() == id)
                 .collect(Collectors.toList());
     }
 
     public List<Order> getOrders() {
-        return orderRepository.getAll();
+        List<Order> orders = orderRepository.getAll();
+        logger.info("get orders by admin " + orders.stream().map(Order::getId).collect(Collectors.toList()).toString());
+        return orders;
     }
 
 
     public void changeOrderStatus(long id, String orderStatus) {
+        logger.info("order [orderId=" + id + "change status to " + orderStatus);
         orderRepository.changeOrderStatus(id, OrderStatus.valueOf(orderStatus));
     }
 }
